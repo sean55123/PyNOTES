@@ -71,3 +71,5 @@ def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, name,
     print('SA ended!')
     print('Best params:', model.X_init)
     print('Best score:', model.score)
+    BestOutput_Variables = model.X_init
+    BestOutput_Score = model.score

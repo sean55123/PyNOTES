@@ -72,7 +72,7 @@ def Record(n, params, score, name, wbpath, data_label):
             writer.writerow(value)
 
 def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, csv_filename, wbpath, data_label):
-    xi_initial = 0.5
+    xi_initial = 0.2
     X_init = np.array(list(map(lambda x, y, z: np.round(np.random.uniform(x, y), z), xMax, xMin, decimal)))
     X_init = np.atleast_2d(X_init)
     Y_init = np.float64(objective_function(X_init[0]))
@@ -97,9 +97,11 @@ def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, csv_f
             Y_best = Y_next    
         print('-----------------------------------------') 
         print(f"Iteration {i + 1}: X_next = {X_next[0]}, Y_next = {Y_next}")
-        Record(i+1, X_best, Y_best, csv_filename, wbpath, data_label)
+        Record(i+1, X_best[0], Y_best, csv_filename, wbpath, data_label)
     
     print('-----------------------------------------')
     print('BO ended!')
     print("Final recommendation:", X_best[0])
     print("Final results:", Y_best)
+    BestOutput_Variables = X_best[0]
+    BestOutput_Score = Y_best
