@@ -94,3 +94,5 @@ def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, name,
     print('PSO ended!')
     print('Best params:', model.global_best)
     print('Best score:', model.global_best_score)   
+    BestOutput_Variables = model.global_best
+    BestOutput_Score = model.global_best_score
