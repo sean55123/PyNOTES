@@ -19,7 +19,9 @@ class GaussianProcess:
         X = np.atleast_2d(X)
         K_trans = self.kernel(X, self.X_train)
         y_mean = K_trans.dot(self.K_inv).dot(self.y_train)
-        return y_mean
+        K_self = self.kernel(X, X) + self.noise * np.eye(len(X))
+        y_var = K_self - K_trans.dot(self.K_inv).dot(K_trans.T)
+        return y_mean, np.diag(y_var).reshape(-1, 1)
 
 def rbf_kernel(X1, X2, length_scale=1.0, variance=1.0):
     X1 = np.atleast_2d(X1)
@@ -29,11 +31,8 @@ def rbf_kernel(X1, X2, length_scale=1.0, variance=1.0):
 
 def expected_improvement(X, X_sample, model, xi):
     X = np.atleast_2d(X)
-    mu = model.predict(X)
-    mu_sample = model.predict(X_sample)
-    
-    sigma = np.sqrt(np.diag(model.kernel(X, X, length_scale=1.0, variance=1.0)))  # Fix to use model.kernel
-    sigma = sigma.reshape(-1, 1)
+    mu, sigma = model.predict(X)
+    mu_sample, _ = model.predict(X_sample)
     
     mu_sample_opt = np.min(mu_sample)
     
@@ -72,7 +71,9 @@ def Record(n, params, score, name, wbpath, data_label):
             writer.writerow(value)
 
 def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, csv_filename, wbpath, data_label):
-    xi_initial = 0.2
+    csv_filename += '.csv'
+    wbpath += '.csv'
+    xi_initial = 1
     X_init = np.array(list(map(lambda x, y, z: np.round(np.random.uniform(x, y), z), xMax, xMin, decimal)))
     X_init = np.atleast_2d(X_init)
     Y_init = np.float64(objective_function(X_init[0]))
@@ -85,7 +86,7 @@ def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, csv_f
         xi = xi_initial * (0.5 ** (i / (n_iterations // 2)))
         X_next = propose_location(expected_improvement, X_init, Y_init, model, xMax, xMin, decimal, xi)
         
-        Y_next = np.float64(objective_function(X_init[0]))
+        Y_next = np.float64(objective_function(X_next[0])) 
 
         X_init = np.vstack((X_init, X_next))
         Y_init = np.vstack((Y_init, Y_next))
@@ -96,12 +97,11 @@ def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, csv_f
             X_best = X_next
             Y_best = Y_next    
         print('-----------------------------------------') 
-        print(f"Iteration {i + 1}: X_next = {X_next[0]}, Y_next = {Y_next}")
+        print(f"Iteration {i + 1}: Current trial = {X_next[0]}, Current score = {Y_next}")
         Record(i+1, X_best[0], Y_best, csv_filename, wbpath, data_label)
     
     print('-----------------------------------------')
     print('BO ended!')
     print("Final recommendation:", X_best[0])
     print("Final results:", Y_best)
-    BestOutput_Variables = X_best[0]
-    BestOutput_Score = Y_best
+    return Y_best

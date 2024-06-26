@@ -6,17 +6,22 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+# def objective_function(x):
+    # x1 = x[0]
+    # x2 = x[1]
+    # return -(x1**2 - x2/5 + 10)
+
 def objective_function(x):
     x1 = x[0]
     x2 = x[1]
-    return x1**2 - x2/5 + 10
+    return -((x1 - x2**2) + x2/(x1+10.1))
 
 xMax, xMin = [10.0, 10.0], [-10.0, -10.0]
 decimal = [2, 2]
-n_iterations = 30
-csv_filename = 'try.csv'
+n_iterations = 50
+csv_filename = 'try'
 wbpath = os.path.join(os.path.abspath('.'),csv_filename)
-data_label = ['num of runs', 'input 1', 'input 2', 'score']
+data_label = ['num of runs', 'input 1', 'input 2', 'score1']
 
 # pso = PSO(d=2, size=40, c1=0.5, c2=0.5)
 gp = GaussianProcess(kernel=rbf_kernel)
@@ -31,3 +36,4 @@ optimize(n_iterations,
          csv_filename,
          wbpath, 
          data_label)
+

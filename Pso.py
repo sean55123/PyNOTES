@@ -70,7 +70,9 @@ def Record(n, params, score, name, wbpath, data_label):
             writer.writerow(value)
 
 
-def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, name, wbpath, data_label):
+def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, csvfile_name, wbpath, data_label):
+    csvfile_name += '.csv'
+    wbpath += '.csv'
     model.initialization(objective_function, n_iterations, xMax, xMin, decimal)
     current_score = model.global_best_score
     early_stop = 0
@@ -84,7 +86,7 @@ def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, name,
                 break
                 
         model.direction_improvement(i, objective_function)
-        Record(i+1, model.global_best, model.global_best_score, name, wbpath, data_label)
+        Record(i+1, model.global_best, model.global_best_score, csvfile_name, wbpath, data_label)
         print('-----------------------------------------')
         print('Current run :', i+1)
         print('Current best score :', model.global_best_score)
@@ -94,5 +96,4 @@ def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, name,
     print('PSO ended!')
     print('Best params:', model.global_best)
     print('Best score:', model.global_best_score)   
-    BestOutput_Variables = model.global_best
-    BestOutput_Score = model.global_best_score
+    return model.global_best_score

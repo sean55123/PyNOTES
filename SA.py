@@ -37,7 +37,9 @@ def Record(n, params, score, name, wbpath, data_label):
             writer.writerow(data_label)
             writer.writerow(value)
 
-def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, name, wbpath, data_label):
+def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, csvfile_name, wbpath, data_label):
+    csvfile_name += '.csv'
+    wbpath += '.csv'
     accept_count = 0
     current_run = 0
     model.preheating(objective_function)
@@ -56,7 +58,7 @@ def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, name,
                     accept_count += 1
 
             current_run += 1
-            Record(current_run, model.X_init, model.score, name, wbpath, data_label)
+            Record(current_run, model.X_init, model.score, csvfile_name, wbpath, data_label)
 
         if model.T == model.T0:
             print('Initial accept rate =', 100 * accept_count / n_iterations)
@@ -71,5 +73,4 @@ def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, name,
     print('SA ended!')
     print('Best params:', model.X_init)
     print('Best score:', model.score)
-    BestOutput_Variables = model.X_init
-    BestOutput_Score = model.score
+    return model.score
