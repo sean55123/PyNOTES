@@ -339,14 +339,15 @@ def compressor(W, CEPCI):
     Returns:
         List: [Captital cost, Operating cost]
     """
+    W = W/1000
     if (W>=450) & (W<3000):
         CP = 10**(2.2897+1.3604*np.log10(W)-0.1027*(np.log10(W))**2) # Centrifugal compressor
     elif (W>=18) & (W<450):
         CP = 10**(5.0355-1.8002*np.log10(W)+0.8253*(np.log10(W))**2) # Rotary Compressor
     else:
-        W = 18
-        CP = 10**(5.0355-1.8002*np.log10(W)+0.8253*(np.log10(W))**2)
-    
+        W_limit = 18
+        CP = 10**(5.0355-1.8002*np.log10(W_limit)+0.8253*(np.log10(W_limit))**2)
+
     FBM = 2.7
     CBM = round((CP*FBM/1000)*CEPCI/397, 2)
     OPER = round(W*3600*8000/10**9*18.72, 2)

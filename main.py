@@ -6,15 +6,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-# def objective_function(x):
-    # x1 = x[0]
-    # x2 = x[1]
-    # return -(x1**2 - x2/5 + 10)
-
 def objective_function(x):
     x1 = x[0]
     x2 = x[1]
-    return -((x1 - x2**2) + x2/(x1+10.1))
+    return -(x1**2 - x2/5 + 10)
 
 xMax, xMin = [10.0, 10.0], [-10.0, -10.0]
 decimal = [2, 2]
