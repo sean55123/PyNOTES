@@ -202,6 +202,8 @@ def column(D, NT, Tt, Tb, Qc, Qr, P, CEPCI):
     
     It should be noted that the stage height is set to be 0.6096 meter as default,
     heat recovered in the cooler is used to generate corresponding level of steam as well.
+
+    The minimum heat exchanging area for both heater and condenser is set to 8.5 square meter (m2).
     
     Args:
         D (Float): Tray diameter (meter)
@@ -262,9 +264,15 @@ def column(D, NT, Tt, Tb, Qc, Qr, P, CEPCI):
         Cond1lm = ((Tt-15)-(Tt-5))/np.log((Tt-15)/(Tt-5))
         Ac = -Qc/0.852/Cond1lm
         Opt_C = -Qc*3600*8000*4.77/10**9
+    elif Qc == 0:
+        Ac = 0
+        Opt_C = 0
     else:
         Ac = 10**4
         Opt_C = 10**8
+
+    if Ac < 8.5:
+        Ac = 8.5
        
     if Tb >= 264:
         Opt_R = 10**8
@@ -278,9 +286,15 @@ def column(D, NT, Tt, Tb, Qc, Qr, P, CEPCI):
     elif Tb >= 110:
         Ar = Qr/0.568/(160-Tb)
         Opt_R = Qr*3600*8000*4.54/10**9
+    elif Qr == 0:
+        Ar = 0
+        Opt_R = 0
     else:
         Ar = Qr/0.568/(120-Tb)
         Opt_R = Qr*3600*8000*4.11/10**9   
+
+    if Ar < 8.5:
+        Ar = 8.5
         
     if Qc == 0:
         CP_C = 0
@@ -304,7 +318,6 @@ def column(D, NT, Tt, Tb, Qc, Qr, P, CEPCI):
         CBM_R = 0
         Opt_R = 0
     
-    
     CBM_C = CP_C*(1.63+1.66*1*FP_HX)/1000
     CBM_R = CP_R*(1.63+1.66*1*FP_HX)/1000
     CAP = round((CBM_Tower+CBM_Tray+CBM_C+CBM_R)*CEPCI/397, 2)
@@ -316,6 +329,8 @@ def compressor(W, CEPCI):
     Work between 450 to 3000 kW will apply centrifugal comppressor, 
     in the range of 18 to 450 kW will apply rotary compressor,
     work less than 18 will set to be 18 kW.
+
+    Besides, the minimum heat exchanging area is set to 8.5 square meter (m2)
     
     Args:
         W (Float): Compressor duty (kW)
@@ -324,14 +339,15 @@ def compressor(W, CEPCI):
     Returns:
         List: [Captital cost, Operating cost]
     """
+    W = W/1000
     if (W>=450) & (W<3000):
         CP = 10**(2.2897+1.3604*np.log10(W)-0.1027*(np.log10(W))**2) # Centrifugal compressor
-    elif W>=18 & W<450:
+    elif (W>=18) & (W<450):
         CP = 10**(5.0355-1.8002*np.log10(W)+0.8253*(np.log10(W))**2) # Rotary Compressor
     else:
-        W = 18
-        CP = 10**(5.0355-1.8002*np.log10(W)+0.8253*(np.log10(W))**2)
-    
+        W_limit = 18
+        CP = 10**(5.0355-1.8002*np.log10(W_limit)+0.8253*(np.log10(W_limit))**2)
+
     FBM = 2.7
     CBM = round((CP*FBM/1000)*CEPCI/397, 2)
     OPER = round(W*3600*8000/10**9*18.72, 2)
@@ -403,6 +419,9 @@ def exchanger(Ti, To, Q, P, CEPCI):
             Tlm = ((120-Ti)-(120-To))/np.log((120-Ti)/(120-To))
             OPER = Q*3600*8000*2.52/10**9
             A = Q/0.568/Tlm
+    
+    if A < 8.5:
+        A = 8.5
             
     if P < 5:
         FP_HX = 1     
