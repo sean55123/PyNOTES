@@ -50,13 +50,11 @@ def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, csvfi
         for i in range(n_iterations):
             model.fit(decimal, xMax, xMin)
             score = objective_function(model.X_next)
-            
             if i != 0 and i%5 == 0:
                 if model.score == score:
                     early_stop += 1
                 if early_stop == 1:
                     break
-            
             if score < model.score:
                 model.score = score
                 model.X_init = model.X_next.copy()
