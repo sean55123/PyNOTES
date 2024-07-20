@@ -3,7 +3,7 @@ NTUPSE_packs is packed with several useful package for all kind of optimization 
 Specifically, Simulated annealing (SA), Particle Swarm Optimization (PSO), and Bayesian Optimization (BO) are for single objective optimization. Fuzzy, and NSGA2, on the other hand, are for multi-objective optimization. Other files, such Economic.py, Get_variable.py, can cooperate with Aspen Plus to perform optimization.
 
 
-## Simple example
+## Simple example for equation-oriented single objective optimization
 Single objective optimization should start from main.py
 You have to choose the method that you plan to use and import packages from them.
 ```python
@@ -18,31 +18,6 @@ def objective_function(x):
     x1 = x[0]
     x2 = x[1]
     return -(x1**2 - x2/5 + 10)
-```
-For Simulator-based optimiation, you have to call your simulator in objective function.
-In this example a process optimization taking TAC as objective is used as example.
-
-Noted!! Setting.py can be used to input variables to Aspen Plus, checking result status, and calculate objective function.
-```python
-import Setting.py as set
-
-filepath = os.path.join(os.path.abspath('.'),'YourAspenFile.apw')
-aspen = win32.Dispatch('Apwn.Document.40.0') # 40.0 for Aspen V14
-aspen.InitFromFile2(filepath)
-aspen.Visible = 0
-aspen.SuppressDialogs = 1
-
-def objective_function(x):
-    set.var_input(x, aspen)
-    obj = set.TAC_cal(aspen)
-    return obj
-```
-For simulator-base optimization with self-defined objective function.
-```python
-def objective_function(x):
-    set.var_input(x, aspen)
-    obj = set.Cal_obj(aspen)
-    return obj
 ```
 Subsequently, customized your algorith with sepecific information, such as upper and lower bondary, decimal places for all the input parameters, number of iteration, csv file name, collecting variables name.
 ```python
@@ -73,4 +48,30 @@ optimize(n_iterations,
          csv_filename,
          wbpath, 
          data_label)
+```
+## Simple example for simulator-based single objective optimization
+For Simulator-based optimiation, you have to call your simulator in objective function.
+In this example a process optimization taking TAC as objective is used as example.
+
+Noted!! Setting.py can be used to input variables to Aspen Plus, checking result status, and calculate objective function.
+```python
+import Setting.py as set
+
+filepath = os.path.join(os.path.abspath('.'),'YourAspenFile.apw')
+aspen = win32.Dispatch('Apwn.Document.40.0') # 40.0 for Aspen V14
+aspen.InitFromFile2(filepath)
+aspen.Visible = 0
+aspen.SuppressDialogs = 1
+
+def objective_function(x):
+    set.var_input(x, aspen)
+    obj = set.TAC_cal(aspen)
+    return obj
+```
+For simulator-base optimization with self-defined objective function.
+```python
+def objective_function(x):
+    set.var_input(x, aspen)
+    obj = set.Cal_obj(aspen)
+    return obj
 ```
