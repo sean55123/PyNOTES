@@ -6,14 +6,14 @@ Specifically, Simulated annealing (SA), Particle Swarm Optimization (PSO), and B
 ## Simple example
 Single objective optimization should start from main.py
 You have to choose the method that you plan to use and import packages from them.
-'''Python
+'''python
 from Bayesian import rbf_kernel, optimize, GaussianProcess
-# from Pso import PSO, optimize
-# from SA import SA, optimize
+from Pso import PSO, optimize
+from SA import SA, optimize
 '''
 After importing you have to design the objective function on your own.
 For equation-oriented optimization.
-'''Python
+'''python
 def objective_function(x):
     x1 = x[0]
     x2 = x[1]
@@ -23,7 +23,7 @@ For Simulator-based optimiation, you have to call your simulator in objective fu
 In this example a process optimization taking TAC as objective is used as example.
 
 Noted!! Setting.py can be used to input variables to Aspen Plus, checking result status, and calculate objective function.
-'''Python
+'''python
 import Setting.py as set
 
 filepath = os.path.join(os.path.abspath('.'),'YourAspenFile.apw')
@@ -38,14 +38,14 @@ def objective_function(x):
     return obj
 '''
 For simulator-base optimization with self-defined objective function.
-'''Python
+'''python
 def objective_function(x):
     set.var_input(x, aspen)
     obj = set.Cal_obj(aspen)
     return obj
 '''
 Subsequently, customized your algorith with sepecific information, such as upper and lower bondary, decimal places for all the input parameters, number of iteration, csv file name, collecting variables name.
-'''Python
+'''python
 xMax, xMin = [10.0, 10.0], [-10.0, -10.0]
 decimal = [2, 2]
 n_iterations = 50
@@ -57,13 +57,13 @@ It should be noted that each algorithm needs to be customized with specific para
 PSO requires: d (Dimension of matrix), size (population size), c1 and c2 (Exploring and Exploiting robustness)
 Bayesian requires: kernel (Currently only rbf_kernel can choose)
 Simulated Annealing requires: T0 (Initiating temperature), Tf (Termination temperature), k (Cooling gradient), step (Parameter moving speed), index (0 for contiunous, 1 for discrete random variable generating), X_init (Initial points)
-'''Python
+'''python
 pso = PSO(d=2, size=40, c1=0.5, c2=0.5)
 gp = GaussianProcess(kernel=rbf_kernel)
 sa = SA(T0=100, Tf=0.1, k=0.85, step=[3, 3], index=[0, 0], X_init=[0, 0])
 '''
 Run the optimization via optimization function.
-'''Python
+'''python
 optimize(n_iterations,
          xMax,
          xMin,
