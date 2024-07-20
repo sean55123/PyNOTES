@@ -42,41 +42,46 @@ def var_input(Vars,aspen):
     aspen.Tree.FindNode(r"\Data\Reactions\Reactions\RWGSD\Input\PRE_EXP\1").Value  = Vars[10]*61.95   
     aspen.Engine.Run2()
 
-def Cal_obj(aspen):        
-    C2 = aspen.Tree.FindNode(r"\Data\Streams\OUT\Output\MASSFLOW\MIXED\C2H4").value
-    C3 = aspen.Tree.FindNode(r"\Data\Streams\OUT\Output\MASSFLOW\MIXED\C3H6").value 
-    C4 = aspen.Tree.FindNode(r"\Data\Streams\OUT\Output\MASSFLOW\MIXED\C4H8-2").value 
+def Cal_obj(aspen):
+    status = get_status(aspen)
+    if status == 0:
+                  
+        C2 = aspen.Tree.FindNode(r"\Data\Streams\OUT\Output\MASSFLOW\MIXED\C2H4").value
+        C3 = aspen.Tree.FindNode(r"\Data\Streams\OUT\Output\MASSFLOW\MIXED\C3H6").value 
+        C4 = aspen.Tree.FindNode(r"\Data\Streams\OUT\Output\MASSFLOW\MIXED\C4H8-2").value 
+            
+        SC = (-C2*1.200 - C3*1.133 - C4*1.301)*8000/1000
         
-    SC = (-C2*1.200 - C3*1.133 - C4*1.301)*8000/1000
-    
-    # define penalty
-    T1Max = aspen.Tree.FindNode(r"\Data\Blocks\R1\Output\TMAX").value
-    T2Max = aspen.Tree.FindNode(r"\Data\Blocks\R2\Output\TMAX").value
-    R1out = aspen.Tree.FindNode(r"\Data\Streams\PTOC\Output\TEMP_OUT\MIXED").value
-    R2out = aspen.Tree.FindNode(r"\Data\Streams\OUT\Output\TEMP_OUT\MIXED").value
-    PEN4 = aspen.Tree.FindNode(r"\Data\Streams\OILIN\Output\MASSFLMX\MIXED").value * 1e-3
+        # define penalty
+        T1Max = aspen.Tree.FindNode(r"\Data\Blocks\R1\Output\TMAX").value
+        T2Max = aspen.Tree.FindNode(r"\Data\Blocks\R2\Output\TMAX").value
+        R1out = aspen.Tree.FindNode(r"\Data\Streams\PTOC\Output\TEMP_OUT\MIXED").value
+        R2out = aspen.Tree.FindNode(r"\Data\Streams\OUT\Output\TEMP_OUT\MIXED").value
+        PEN4 = aspen.Tree.FindNode(r"\Data\Streams\OILIN\Output\MASSFLMX\MIXED").value * 1e-3
 
-    if (T1Max > 360):
-        PEN1= 100000
-        print("T1 temp too high")
-    else:
-        PEN1 = 0
+        if (T1Max > 360):
+            PEN1= 100000
+            print("T1 temp too high")
+        else:
+            PEN1 = 0
+            
+        if (T2Max > 360):
+            PEN2= 100000
+            print("T2 temp too high")
+        else:
+            PEN2 = 0
+        if (R1out > T1Max) or (R2out > T2Max):
+            PEN3 = 1e6
+        else:
+            PEN3 = 0
         
-    if (T2Max > 360):
-        PEN2= 100000
-        print("T2 temp too high")
+        obj = PEN1+PEN2+PEN3+PEN4+SC 
     else:
-        PEN2 = 0
-    if (R1out > T1Max) or (R2out > T2Max):
-        PEN3 = 1e6
-    else:
-        PEN3 = 0
-    
-    obj = PEN1+PEN2+PEN3+PEN4+SC   
+        obj = 1e10
     return obj  
 
-def get_status(aspen):
-
+def get_status(aspen, Display=1):
+    status = 1 # Status 0 for converge, 1 for diverge
     Node = aspen.Tree.FindNode(r"\Data\Results Summary\Run-Status")
     if Node == None:
         sta = 32
@@ -89,7 +94,16 @@ def get_status(aspen):
     sta3 = aspen.Tree.FindNode(r"\Data\Blocks\HX1").AttributeValue(12) & 1 == 1
     sta4 = aspen.Tree.FindNode(r"\Data\Blocks\R2").AttributeValue(12) & 1 == 1
     sta5 = aspen.Tree.FindNode(r"\Data\Blocks\HX2").AttributeValue(12) & 1 == 1
-    return [sta, sta2, sta3, sta4, sta5]
+    results = [sta, sta2, sta3, sta4, sta5]
+    if sum(results) == len(results):
+        status = 0
+    if Display == 1:
+        if status == 0:
+            print("Results available")
+        else:
+            print("Results with errors")
+    return status
+        
 
 def TAC_cal(aspen):
     """Auto calculation of economic. Designed by Shiau-Jeng Shen.
@@ -101,58 +115,62 @@ def TAC_cal(aspen):
     Returns:
         Float: Total annual cost with specific PBY and CEPCI
     """
+    status = get_status(aspen)
     CEPCI = 821.1 # 2022 SEP
     pby = 3
 
     capital_cost_dict = {}
     ope_cost_dict = {}
     
-    # Calculate Capital Cost of Distillation Tower
-    for bname in [item.name for item in aspen.Tree.FindNode(r'\Data\Blocks').Elements if item.AttributeValue(6)=='RadFrac']:
-        D = aspen.Application.Tree.FindNode(fr"\Data\Blocks\{bname}\Subobjects\Column Internals\INT-1\Subobjects\Sections\CS-1\Input\CA_DIAM\INT-1\CS-1").Value
-        V, NT, Tt, Tb, Qc, Qr, P = apvar.getvar_column(D, bname, aspen)
-        cap_c, oper_c = eco.column(D, NT, Tt, Tb, Qc, Qr, P, CEPCI)
-        capital_cost_dict[bname] = cap_c
-        ope_cost_dict[bname] = oper_c
+    if status == 0:
+        # Calculate Capital Cost of Distillation Tower
+        for bname in [item.name for item in aspen.Tree.FindNode(r'\Data\Blocks').Elements if item.AttributeValue(6)=='RadFrac']:
+            D = aspen.Application.Tree.FindNode(fr"\Data\Blocks\{bname}\Subobjects\Column Internals\INT-1\Subobjects\Sections\CS-1\Input\CA_DIAM\INT-1\CS-1").Value
+            V, NT, Tt, Tb, Qc, Qr, P = apvar.getvar_column(D, bname, aspen)
+            cap_c, oper_c = eco.column(D, NT, Tt, Tb, Qc, Qr, P, CEPCI)
+            capital_cost_dict[bname] = cap_c
+            ope_cost_dict[bname] = oper_c
 
-    # Calculate Capital Cost of Flash
-    for bname in [item.name for item in aspen.Tree.FindNode(r'\Data\Blocks').Elements if item.AttributeValue(6)=='Flash2']:
-        V, D, P, n = apvar.getvar_flash(bname, 5, aspen)
-        cap_c, oper_c = eco.flash(V, D, P, n, CEPCI)
-        capital_cost_dict[bname] = cap_c
-        ope_cost_dict[bname] = oper_c
+        # Calculate Capital Cost of Flash
+        for bname in [item.name for item in aspen.Tree.FindNode(r'\Data\Blocks').Elements if item.AttributeValue(6)=='Flash2']:
+            V, D, P, n = apvar.getvar_flash(bname, 5, aspen)
+            cap_c, oper_c = eco.flash(V, D, P, n, CEPCI)
+            capital_cost_dict[bname] = cap_c
+            ope_cost_dict[bname] = oper_c
 
-    # Calculate Capital Cost of exchanger
-    for bname in [item.name for item in aspen.Tree.FindNode(r'\Data\Blocks').Elements if item.AttributeValue(6)=='Heater']:
-        Ti, To, Q, P = apvar.getvar_exchanger(bname, aspen)
-        cap_c, oper_c = eco.exchanger(Ti, To, Q, P, CEPCI)
-        capital_cost_dict[bname] = cap_c
-        ope_cost_dict[bname] = oper_c
+        # Calculate Capital Cost of exchanger
+        for bname in [item.name for item in aspen.Tree.FindNode(r'\Data\Blocks').Elements if item.AttributeValue(6)=='Heater']:
+            Ti, To, Q, P = apvar.getvar_exchanger(bname, aspen)
+            cap_c, oper_c = eco.exchanger(Ti, To, Q, P, CEPCI)
+            capital_cost_dict[bname] = cap_c
+            ope_cost_dict[bname] = oper_c
 
-    # Calculate Capital Cost of CSTR
-    for bname in [item.name for item in aspen.Tree.FindNode(r'\Data\Blocks').Elements if item.AttributeValue(6)=='RCSTR']:
-        V, D, Ti, To, P, Q, n = apvar.getvar_reactor(bname, None, None, aspen)
-        cap_c, oper_c = eco.reactor(V, D, Ti, To, P, Q, n, "CSTR", CEPCI)
-        capital_cost_dict[bname] = cap_c
-        ope_cost_dict[bname] = oper_c
+        # Calculate Capital Cost of CSTR
+        for bname in [item.name for item in aspen.Tree.FindNode(r'\Data\Blocks').Elements if item.AttributeValue(6)=='RCSTR']:
+            V, D, Ti, To, P, Q, n = apvar.getvar_reactor(bname, None, None, aspen)
+            cap_c, oper_c = eco.reactor(V, D, Ti, To, P, Q, n, "CSTR", CEPCI)
+            capital_cost_dict[bname] = cap_c
+            ope_cost_dict[bname] = oper_c
 
-    # Calculate Capital Cost of HeatX
-    for bname in [item.name for item in aspen.Tree.FindNode(r'\Data\Blocks').Elements if item.AttributeValue(6)=='HeatX']:
-        A, P, Tmin = apvar.getvar_heatx(bname, aspen)
-        cap_c, oper_c = eco.heatx(A, P, CEPCI)
-        capital_cost_dict[bname] = cap_c
-        ope_cost_dict[bname] = oper_c
-    
-    # Calculates Capital Cost for Compressor
-    for bname in [item.name for item in aspen.Tree.FindNode(r'\Data\Blocks').Elements if item.AttributeValue(6)=='Compr']:
-        W = apvar.getvar_compressor(bname, aspen)
-        cap_c, oper_c = eco.compressor(W, CEPCI)
-        capital_cost_dict[bname] = cap_c
-        ope_cost_dict[bname] = oper_c
+        # Calculate Capital Cost of HeatX
+        for bname in [item.name for item in aspen.Tree.FindNode(r'\Data\Blocks').Elements if item.AttributeValue(6)=='HeatX']:
+            A, P, Tmin = apvar.getvar_heatx(bname, aspen)
+            cap_c, oper_c = eco.heatx(A, P, CEPCI)
+            capital_cost_dict[bname] = cap_c
+            ope_cost_dict[bname] = oper_c
+        
+        # Calculates Capital Cost for Compressor
+        for bname in [item.name for item in aspen.Tree.FindNode(r'\Data\Blocks').Elements if item.AttributeValue(6)=='Compr']:
+            W = apvar.getvar_compressor(bname, aspen)
+            cap_c, oper_c = eco.compressor(W, CEPCI)
+            capital_cost_dict[bname] = cap_c
+            ope_cost_dict[bname] = oper_c
 
-    TCC = sum(capital_cost_dict.values())
-    TOC = sum(ope_cost_dict.values())
-    TAC = round(TOC + TCC/pby, 2)
+        TCC = sum(capital_cost_dict.values())
+        TOC = sum(ope_cost_dict.values())
+        TAC = round(TOC + TCC/pby, 2)
+    else:
+        TAC = 1e10
     return TAC
 
 def Aspen_saving(cost_t, aspen, best, path_folder, filename):
