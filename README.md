@@ -29,8 +29,11 @@ wbpath = os.path.join(os.path.abspath('.'),csv_filename)
 data_label = ['num of runs', 'input 1', 'input 2', 'score1']
 ```
 It should be noted that each algorithm needs to be customized with specific parameters as well.
+
 PSO requires: d (Dimension of matrix), size (population size), c1 and c2 (Exploring and Exploiting robustness)
+
 Bayesian requires: kernel (Currently only rbf_kernel can choose)
+
 Simulated Annealing requires: T0 (Initiating temperature), Tf (Termination temperature), k (Cooling gradient), step (Parameter moving speed), index (0 for contiunous, 1 for discrete random variable generating), X_init (Initial points)
 ```python
 pso = PSO(d=2, size=40, c1=0.5, c2=0.5)
