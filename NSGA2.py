@@ -1,28 +1,33 @@
 import numpy as np
 import random
 import matplotlib.pyplot as plt
+import csv
+import os
 
-
-class nsga2:
-    def __init__(self, pop_size):
+class NSGA:
+    def __init__(self, pop_size, mutation_rate):
         self.pop_size = pop_size
+        self.mutation_rate = mutation_rate
 
-    def initialize_population(self, xMax, xMin, decimal):
-        population = np.array(list(map(lambda x, y, z: np.round(np.random.uniform(x, y, size=self.pop_size), z), xMax, xMin, decimal)))
-        individual(population)
-        return population
-
-class individual:
+class Individual:
     def __init__(self, x):
         self.x = x
+        self.objectives = objective_functions(x)
         self.rank = None
-        self.objective = 0
         self.crowding_distance = 0
 
-def evaluate_population(objective_function, population):
-    print(individual.x)
+def initialize_population(pop_size, xMax, xMin, decimal):
+    population = []
+    for _ in range(pop_size):
+        x = np.random.uniform(xMax, xMin)
+        x = np.array([round(x[i], decimal[i]) for i in range(len(x))])
+        individual = Individual(x)
+        population.append(individual)
+    return population
+
+def evaluate_population(population):
     for individual in population:
-        individual.objectives = objective_function(individual.x)
+        individual.objectives = objective_functions(individual.x)
 
 def non_dominated_sort(population):
     fronts = [[]]
@@ -65,8 +70,16 @@ def calculate_crowding_distance(front):
         front.sort(key=lambda x: x.objectives[m])
         front[0].crowding_distance = float('inf')
         front[-1].crowding_distance = float('inf')
-        for i in range(1, len(front) - 1):
-            front[i].crowding_distance += (front[i + 1].objectives[m] - front[i - 1].objectives[m]) / (max(front, key=lambda x: x.objectives[m]).objectives[m] - min(front, key=lambda x: x.objectives[m]).objectives[m])
+        
+        min_obj = min(front, key=lambda x: x.objectives[m]).objectives[m]
+        max_obj = max(front, key=lambda x: x.objectives[m]).objectives[m]
+
+        if max_obj == min_obj:
+            for i in range(1, len(front) - 1):
+                front[i].crowding_distance = 0
+        else:
+            for i in range(1, len(front) - 1):
+                front[i].crowding_distance += (front[i + 1].objectives[m] - front[i - 1].objectives[m]) / (max_obj - min_obj)
 
 def selection(population, fronts):
     mating_pool = []
@@ -76,49 +89,75 @@ def selection(population, fronts):
         mating_pool.extend(front)
     return mating_pool
 
-def crossover_and_mutation(mating_pool, pop_size, xMax, xMin):
+def crossover_and_mutation(mating_pool, pop_size, mutation_rate, xMax, xMin, decimal):
     offspring = []
     while len(offspring) < pop_size:
         parent1 = random.choice(mating_pool)
         parent2 = random.choice(mating_pool)
-        child_x = (parent1.x + parent2.x) / 2  # Simple crossover
-        if random.random() < 0.1:  # Mutation probability
-            child_x += random.uniform(-0.1, 0.1)
-        child_x = np.clip(child_x, xMax, xMin)
-        offspring.append(child_x)
+        child_x = (parent1.x + parent2.x) / 2  
+        if random.random() < mutation_rate:  
+            child_x += np.random.uniform(-0.5, 0.5)
+        child_x = np.array([min(max(child_x[i], xMin[i]), xMax[i]) for i in range(len(child_x))])
+        child_x = np.array([round(child_x[i], decimal[i]) for i in range(len(child_x))])
+        offspring.append(Individual(child_x))
     return offspring
 
-def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, name, wbpath, data_label):
-    population = model.initialize_population(xMax, xMin, decimal)
-    evaluate_population(objective_function, population)
+def Record(n, params, score, name, wbpath, data_label):
+    value = [n] + list(params) + [score]
+    if os.path.isfile(wbpath):
+        with open(name, 'a+', newline = '') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(value)
+    else:
+        with open(name, 'a+', newline = '') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(data_label)
+            writer.writerow(value)
+
+
+def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, csvfile_name, wbpath, data_label):
+    global objective_functions
+    pareto_wbpath = csvfile_name + '_Pareto.csv'
+    csvfile_name += '_all_data.csv'
+    wbpath += '_all_data.csv'
+    objective_functions = objective_function
+    pop_size = model.pop_size
+    mutation_rate = model.mutation_rate
+    population = initialize_population(pop_size, xMax, xMin, decimal)
+    evaluate_population(population)
+    print('-----------------------------------------')
+    print("Initialization complete.")
     
     for gen in range(n_iterations):
         fronts = non_dominated_sort(population)
         mating_pool = selection(population, fronts)
-        offspring = crossover_and_mutation(mating_pool, model.pop_size, xMax, xMin)
+        offspring = crossover_and_mutation(mating_pool, pop_size, mutation_rate, xMax, xMin, decimal)
         evaluate_population(offspring)
         combined_population = population + offspring
         fronts = non_dominated_sort(combined_population)
         new_population = []
         for front in fronts:
-            if len(new_population) + len(front) <= model.pop_size:
+            if len(new_population) + len(front) <= pop_size:
                 new_population.extend(front)
             else:
                 front.sort(key=lambda x: x.crowding_distance, reverse=True)
-                new_population.extend(front[:model.pop_size - len(new_population)])
+                new_population.extend(front[:pop_size - len(new_population)])
                 break
         population = new_population
+        for individual in population:
+            Record(gen, individual.x, individual.objectives, csvfile_name, wbpath, data_label)
+        print('-----------------------------------------')
+        print(f"Current generation: {gen}")
     
-    f1_values = [ind.objectives[0] for ind in population]
-    f2_values = [ind.objectives[1] for ind in population]
-    plt.figure(figsize=(10, 6))
-    plt.scatter(f1_values, f2_values, c='blue', marker='o')
-    plt.title('NSGA-II Results: Objective Space')
-    plt.xlabel('Objective 1 (f1)')
-    plt.ylabel('Objective 2 (f2)')
-    plt.grid(True)
-    plt.show()
+    recording_pareto(pareto_wbpath, population)
 
+def recording_pareto(pareto_wbpath, population):
+    num_objectives = len(population[0].objectives)
+    data_label = ['Input ' + str(i+1) for i in range(len(population[0].x))] + ['Objective ' + str(i+1) for i in range(num_objectives)]
 
-# for ind in final_population:
-#     print(f"x: {ind.x}, f1: {ind.objectives[0]}, f2: {ind.objectives[1]}")
+    with open(pareto_wbpath, 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(data_label)
+        for individual in population:
+            row = list(individual.x) + individual.objectives
+            writer.writerow(row)
