@@ -95,7 +95,7 @@ def objective_function(x):
     return [f1, f2]
 ```
 Besides, if you're doing bi-objective optimization you can apply the Pareto_plot.py to plot the Pareton front.
-<img src='Figure_1.png'/>
+!(images/Pareto_plot.png)
 
 
 
