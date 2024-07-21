@@ -79,6 +79,26 @@ def objective_function(x):
     return obj
 ```
 
+## Multi-objective optimization
+In here both Fuzzy and NSGA-II can be used to perform the multi-objective optimization.
+For NSGA-II, you can define the pop size, and mutation rate.
+```python
+nsga2 = NSGA(pop_size=100, mutation_rate=0.1)
+```
+It should be careful that the objective should be designed in following pqttern:
+```python
+def objective_function(x):
+    x1 = x[0]
+    x2 = x[1]
+    f1 = x1**2 + x2
+    f2 = (x2-2)**2 - x1
+    return [f1, f2]
+```
+Besides, if you're doing bi-objective optimization you can apply the Pareto_plot.py to plot the Pareton front.
+<img src='Figure_1.png'/>
+
+
+
 ## Techno-economic analysis
 In techno-economic analysis TEA.py and TEA_main.py would be needed.
 Fortunately, there would be any of the modifications required in TEA.py, all you have to do is adding TCC, TOC, TWC, TMC to the TEA_main.py.
