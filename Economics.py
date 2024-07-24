@@ -488,8 +488,7 @@ def vacuum(V, P, name1, name2, bname1, bname2, CEPCI, aspen):
         
     Returns:
         List: [Captital cost, Operating cost]
-    """
-    
+    """  
     W = (5+(0.0298+0.03088*np.log((P+1)*760)-0.0005733*np.log((P+1)*760)**2)*(V*35.3147)**0.66)*0.4536
  
     # print('V   =  ', round(V,2), '   W   =   ', round(W,2))    
