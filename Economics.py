@@ -184,11 +184,25 @@ def flash(V, D, P, n, CEPCI):
     return [CBM_F, 0]
 
 def heatx(A, P, CEPCI):
+    """If the heat exchanger area is lower than 10 and larger than 1 square meter (m2), double pipe exchanger will be applied.
+    If the area is in the range of 10 to 1000 square meter (m2), fixed tube heat exchanger will be used.
+    Args:
+        A (Float): Heat exchanging area
+        P (Float): Operating pressure
+        CEPCI (Float): CEPCI, 822.1 for 2022 Sep
+
+    Returns:
+        List: [Bare model cost, 0]
+    """
     if P < 5:
        FP_HX = 1     
     else:
-       FP_HX = 10**(0.03881-0.11272*np.log10(P)+0.08183*(np.log10(P))**2)      
-    CP = 10**(4.3247-0.3030*np.log10(A)+0.1634*(np.log10(A))**2)
+       FP_HX = 10**(0.03881-0.11272*np.log10(P)+0.08183*(np.log10(P))**2)   
+    if A > 10:
+        CP = 10**(4.3247-0.3030*np.log10(A)+0.1634*(np.log10(A))**2)
+    elif A <= 10:
+        CP = 10**(3.3444+0.2745*np.log10(A)-0.0472*np.log10(A)**2)
+        
     CBM = round((CP*(1.63+1.66*1*FP_HX)/1000)*CEPCI/397, 2)
     return [CBM, 0]
 
@@ -203,7 +217,8 @@ def column(D, NT, Tt, Tb, Qc, Qr, P, CEPCI):
     It should be noted that the stage height is set to be 0.6096 meter as default,
     heat recovered in the cooler is used to generate corresponding level of steam as well.
 
-    The minimum heat exchanging area for both heater and condenser is set to 8.5 square meter (m2).
+    If the heat exchanger area is lower than 10 and larger than 1 square meter (m2), double pipe exchanger will be applied.
+    If the area is in the range of 10 to 1000 square meter (m2), fixed tube heat exchanger will be used.
     
     Args:
         D (Float): Tray diameter (meter)
@@ -270,9 +285,6 @@ def column(D, NT, Tt, Tb, Qc, Qr, P, CEPCI):
     else:
         Ac = 10**4
         Opt_C = 10**8
-
-    if Ac < 8.5:
-        Ac = 8.5
        
     if Tb >= 264:
         Opt_R = 10**8
@@ -292,19 +304,20 @@ def column(D, NT, Tt, Tb, Qc, Qr, P, CEPCI):
     else:
         Ar = Qr/0.568/(120-Tb)
         Opt_R = Qr*3600*8000*4.11/10**9   
-
-    if Ar < 8.5:
-        Ar = 8.5
         
     if Qc == 0:
         CP_C = 0
-    else:
+    elif Qc != 0 and Ac > 10:
         CP_C = 10**(4.3247-0.3030*np.log10(Ac)+0.1634*(np.log10(Ac))**2)
+    elif Qc != 0 and Ac <= 10:
+        CP_C = 10**(3.3444+0.2745*np.log10(A)-0.0472*np.log10(A)**2)
 
     if Qr == 0:
         CP_R = 0
-    else:
+    elif Qr != 0 and Ar > 10:
         CP_R = 10**(4.3247-0.3030*np.log10(Ar)+0.1634*(np.log10(Ar))**2)
+    elif Qr != 0 and Ar <= 10:
+        CP_R = 10**(3.3444+0.2745*np.log10(A)-0.0472*np.log10(A)**2)
 
     if P < 5:
         FP_HX = 1
@@ -329,8 +342,8 @@ def compressor(W, CEPCI):
     Work between 450 to 3000 kW will apply centrifugal comppressor, 
     in the range of 18 to 450 kW will apply rotary compressor,
     work less than 18 will set to be 18 kW.
-
-    Besides, the minimum heat exchanging area is set to 8.5 square meter (m2)
+    
+    !!Beware the units of works!!
     
     Args:
         W (Float): Compressor duty (kW)
@@ -354,7 +367,8 @@ def compressor(W, CEPCI):
     return [CBM, OPER]
 
 def exchanger(Ti, To, Q, P, CEPCI):
-    """_summary_
+    """If the heat exchanger area is lower than 10 and larger than 1 square meter (m2), double pipe exchanger will be applied.
+    If the area is in the range of 10 to 1000 square meter (m2), fixed tube heat exchanger will be used.
 
     Args:
         Ti (Float): Stream inlet temperature (oC)
@@ -419,16 +433,17 @@ def exchanger(Ti, To, Q, P, CEPCI):
             Tlm = ((120-Ti)-(120-To))/np.log((120-Ti)/(120-To))
             OPER = Q*3600*8000*2.52/10**9
             A = Q/0.568/Tlm
-    
-    if A < 8.5:
-        A = 8.5
             
     if P < 5:
         FP_HX = 1     
     else:
         FP_HX = 10**(0.03881-0.11272*np.log10(P)+0.08183*(np.log10(P))**2)
-    
-    CP = 10**(4.3247-0.3030*np.log10(A)+0.1634*(np.log10(A))**2)
+        
+    if A > 10:
+        CP = 10**(4.3247-0.3030*np.log10(A)+0.1634*(np.log10(A))**2)
+    elif A <= 10:
+        CP = 10**(3.3444+0.2745*np.log10(A)-0.0472*np.log10(A)**2)
+        
     CBM = CP*(1.63+1.66*1*FP_HX)/1000
     
     CAP = round(CBM*CEPCI/397, 2)
