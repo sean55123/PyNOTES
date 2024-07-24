@@ -220,6 +220,18 @@ def column(D, NT, Tt, Tb, Qc, Qr, P, CEPCI):
     If the heat exchanger area is lower than 10 and larger than 1 square meter (m2), double pipe exchanger will be applied.
     If the area is in the range of 10 to 1000 square meter (m2), fixed tube heat exchanger will be used.
     
+    Utility (Hot):
+    120 celsius: 2-bar steam
+    160 celsius: low-pressured steam
+    184 celsius: medium-pressured steam
+    254 celsius: high-pressured steam
+    
+    Utility (Cold):
+    30-45 celsius: cooling water
+    5-15 celsius: chilled water
+    (-20)-(-19) celsius: NH3
+    (-49)-(-48) celsius: Propylene
+    
     Args:
         D (Float): Tray diameter (meter)
         NT (Integer): Number of tray 
@@ -279,6 +291,14 @@ def column(D, NT, Tt, Tb, Qc, Qr, P, CEPCI):
         Cond1lm = ((Tt-15)-(Tt-5))/np.log((Tt-15)/(Tt-5))
         Ac = -Qc/0.852/Cond1lm
         Opt_C = -Qc*3600*8000*4.77/10**9
+    elif Tt >= -17:
+        Cond1lm = ((Tt-(-20))-(Tt-(-19)))/np.log((Tt-15)/(Tt-5))
+        Ac = -Qc/0.852/Cond1lm
+        Opt_C = -Qc*3600*8000*7.89/10**9
+    elif Tt >= -46:
+        Cond1lm = ((Tt-(-49))-(Tt-(-48)))/np.log((Tt-15)/(Tt-5))
+        Ac = -Qc/0.852/Cond1lm
+        Opt_C = -Qc*3600*8000*13.11/10**9
     elif Qc == 0:
         Ac = 0
         Opt_C = 0
@@ -369,6 +389,18 @@ def compressor(W, CEPCI):
 def exchanger(Ti, To, Q, P, CEPCI):
     """If the heat exchanger area is lower than 10 and larger than 1 square meter (m2), double pipe exchanger will be applied.
     If the area is in the range of 10 to 1000 square meter (m2), fixed tube heat exchanger will be used.
+    
+    Utility (Hot):
+    120 celsius: 2-bar steam
+    160 celsius: low-pressured steam
+    184 celsius: medium-pressured steam
+    254 celsius: high-pressured steam
+    
+    Utility (Cold):
+    30-45 celsius: cooling water
+    5-15 celsius: chilled water
+    (-20)-(-19) celsius: NH3
+    (-49)-(-48) celsius: Propylene
 
     Args:
         Ti (Float): Stream inlet temperature (oC)
