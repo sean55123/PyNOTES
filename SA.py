@@ -53,6 +53,9 @@ def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, csvfi
             
             if model.score == score:
                 early_stop += 1
+            else:
+                early_stop = 0
+
             if early_stop == 5:
                 break
             
