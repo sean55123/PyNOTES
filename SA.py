@@ -37,40 +37,38 @@ def Record(n, params, score, name, wbpath, data_label):
             writer.writerow(data_label)
             writer.writerow(value)
 
-def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, csvfile_name, wbpath, data_label):
-    csvfile_name += '.csv'
-    wbpath += '.csv'
+def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, name, wbpath, data_label):
     accept_count = 0
     current_run = 0
     early_stop = 0
     model.preheating(objective_function)
     while model.T > model.Tf:
-        if early_stop == 1:
+        if early_stop == 10:
             break
         for i in range(n_iterations):
             model.fit(decimal, xMax, xMin)
             score = objective_function(model.X_next)
             
-            if model.score == score:
-                early_stop += 1
-            else:
-                early_stop = 0
-
-            if early_stop == 5:
-                break
             
             if score < model.score:
                 model.score = score
                 model.X_init = model.X_next.copy()
                 accept_count += 1
+                early_stop = 0
             else:
                 if np.random.random() < np.exp(-(score - model.score) / model.T):
                     model.score = score
                     model.X_init = model.X_next.copy()
                     accept_count += 1
-
+                    early_stop = 0
+                else:
+                    early_stop += 1
+                    
+            
+            if early_stop == 10:
+                break
             current_run += 1
-            Record(current_run, model.X_init, model.score, csvfile_name, wbpath, data_label)
+            Record(current_run, model.X_init, model.score, name, wbpath, data_label, model.X_next, score)
 
         if model.T == model.T0:
             print('Initial accept rate =', 100 * accept_count / n_iterations)
