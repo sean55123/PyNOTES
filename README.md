@@ -58,7 +58,8 @@ In this example a process optimization taking TAC as objective is used as exampl
 
 Noted!! Setting.py can be used to input variables to Aspen Plus, checking result status, and calculate objective function.
 ```python
-import Setting.py as set
+import Setting as set
+import win32com.client as win32 
 
 filepath = os.path.join(os.path.abspath('.'),'YourAspenFile.apw')
 aspen = win32.Dispatch('Apwn.Document.40.0') # 40.0 for Aspen V14
@@ -68,15 +69,52 @@ aspen.SuppressDialogs = 1
 
 def objective_function(x):
     set.var_input(x, aspen)
-    obj = set.TAC_cal(aspen)
+    status = set.get_status()
+    if status == 0:
+        obj = set.TAC_cal(aspen)
+    else:
+        obj = 10e7
     return obj
 ```
 For simulator-base optimization with self-defined objective function.
 ```python
 def objective_function(x):
     set.var_input(x, aspen)
-    obj = set.Cal_obj(aspen)
+    status = set.get_status()
+    if status == 0:
+        obj = set.Cal_obj(aspen)
+    else:
+        obj = 10e7
     return obj
+```
+Use the get_status() in setting.py to check the status of simulator.
+
+### It is crucial to control the result of simulator
+Remeber to change the description of status in setting.py!!!
+```python
+def get_status(aspen, Display=1):
+    status = 1 # Status 0 for converge, 1 for diverge
+    Node = aspen.Tree.FindNode(r"\Data\Results Summary\Run-Status")
+    if Node == None:
+        sta = 32
+    elif (Node.AttributeValue(12) & 1 ==1) or (Node.AttributeValue(12) & 4 == 4):
+        sta = 1
+    else:
+        sta = 32
+
+    sta2 = aspen.Tree.FindNode(r"\Data\Blocks\R1").AttributeValue(12) & 1 == 1
+    sta3 = aspen.Tree.FindNode(r"\Data\Blocks\HX1").AttributeValue(12) & 1 == 1
+    sta4 = aspen.Tree.FindNode(r"\Data\Blocks\R2").AttributeValue(12) & 1 == 1
+    sta5 = aspen.Tree.FindNode(r"\Data\Blocks\HX2").AttributeValue(12) & 1 == 1
+    results = [sta, sta2, sta3, sta4, sta5]
+    if sum(results) == len(results):
+        status = 0
+    if Display == 1:
+        if status == 0:
+            print("Results available")
+        else:
+            print("Results with errors")
+    return status
 ```
 
 ## Multi-objective optimization
