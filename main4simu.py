@@ -55,5 +55,6 @@ score, params = optimize(n_iterations,
 end_time = time.perf_counter()
 cost_t = round(end_time - start_time, 1)
 
+folder_path = os.path.dirname(filepath)
 aspen = link2aspen()
-set.Aspen_saving(cost_t, aspen, params, filepath, 'Results')
+set.Aspen_saving(cost_t, aspen, params, folder_path, 'Results')

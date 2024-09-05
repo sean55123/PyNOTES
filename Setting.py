@@ -168,7 +168,7 @@ def TAC_cal(aspen):
     TAC = round(TOC + TCC/pby, 2)
     return TAC
 
-def Aspen_saving(cost_t, aspen, best, path_folder, filename):
+def Aspen_saving(cost_t, aspen, best, folder_path, filename):
     """In order to save Aspen Plus file at the end or during the optimization.
     
     Args:
@@ -178,7 +178,7 @@ def Aspen_saving(cost_t, aspen, best, path_folder, filename):
         path_folder (String): Path of the operating file.
         filename (String): Desired name for saving
     """
-    path = os.path.join(path_folder, filename) + str(cost_t) + '.apw'    
+    path = os.path.join(folder_path, filename) + str(cost_t) + '.apw'    
     var_input(best, aspen)
     aspen.saveas(path)
     aspen.close()
