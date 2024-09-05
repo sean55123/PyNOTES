@@ -60,10 +60,15 @@ Noted!! Setting.py can be used to input variables to Aspen Plus, checking result
 
 The link2apsen() function can help you link Aspen with Python.
 All you need to change is the name of the file and the dispatch number for specific Aspen dispatch.
+
 Aspen V11 -> 37.0
+
 Aspen V12 -> 38.0
+
 Asepn V12.1 -> 39.0
+
 Aspen V14 -> 40.0
+
 ```python
 def link2aspen():
     global filepath
