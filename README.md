@@ -57,17 +57,31 @@ For Simulator-based optimiation, you have to call your simulator in objective fu
 In this example a process optimization taking TAC as objective is used as example.
 
 Noted!! Setting.py can be used to input variables to Aspen Plus, checking result status, and calculate objective function.
+
+The link2apsen() function can help you link Aspen with Python.
+All you need to change is the name of the file and the dispatch number for specific Aspen dispatch.
+Aspen V11 -> 37.0
+Aspen V12 -> 38.0
+Asepn V12.1 -> 39.0
+Aspen V14 -> 40.0
+```python
+def link2aspen():
+    global filepath
+    filepath = os.path.join(os.path.abspath('.'), 'YourAspenFile.apw')
+    aspen = win32.Dispatch('Apwn.Document.37.0') # 40.0 for Aspen V14
+    aspen.InitFromFile2(filepath)
+    aspen.Visible = 0
+    aspen.SuppressDialogs = 1
+    return aspen
+```
+The objective function for simulator-based optimization is as followed.
+
 ```python
 import Setting as set
 import win32com.client as win32 
 
-filepath = os.path.join(os.path.abspath('.'),'YourAspenFile.apw')
-aspen = win32.Dispatch('Apwn.Document.40.0') # 40.0 for Aspen V14
-aspen.InitFromFile2(filepath)
-aspen.Visible = 0
-aspen.SuppressDialogs = 1
-
 def objective_function(x):
+    global aspen
     set.var_input(x, aspen)
     status = set.get_status()
     if status == 0:
@@ -86,6 +100,7 @@ def objective_function(x):
 For simulator-base optimization with self-defined objective function.
 ```python
 def objective_function(x):
+    global aspen
     set.var_input(x, aspen)
     status = set.get_status()
     if status == 0:
@@ -129,6 +144,11 @@ def get_status(aspen, Display=1):
         else:
             print("Results with errors")
     return status
+```
+Finally, use the Aspen_saving() function to save the final result.
+```python
+aspen = link2aspen()
+set.Aspen_saving(cost_t, aspen, params, filepath, 'Results')
 ```
 
 ## Multi-objective optimization
@@ -258,3 +278,20 @@ import csv
 import  numpy_financial as npf
 import ast
 ```
+
+## Acknwoledge
+The primary developer is Hsuan-Han Chiu with support from the following contributors.
+Bor-Yih Yu (National Taiwan University)
+Shiau-Jeng Shen (National Taiwan University)
+
+## References
+1. Turton, R., et al., Analysis, synthesis and design of chemical processes. 2008: Pearson 
+   Education.
+2. J. Kennedy and R. Eberhart, "Particle swarm optimization," Proceedings of ICNN'95 - 
+   International Conference on Neural Networks, Perth, WA, Australia, 1995, pp. 1942-1948 vol.4
+3. D. Bertsimas and J. Tsitsiklis. "Simulated Annealing." Statist. Sci. 8 (1) 10 - 15, 
+   February, 1993.
+4. K. Deb, A. Pratap, S. Agarwal, and T. Meyarivan. A fast and elitist multiobjective 
+   genetic algorithm: nsga-II. Trans. Evol. Comp, 6(2):182–197, April 2002.
+5. Pelikan, M. Bayesian Optimization Algorithm. In: Hierarchical Bayesian Optimization 
+   Algorithm. Studies in Fuzziness and Soft Computing, vol 170. Springer, Berlin, Heidelberg.

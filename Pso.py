@@ -96,4 +96,4 @@ def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, csvfi
     print('PSO ended!')
     print('Best params:', model.global_best)
     print('Best score:', model.global_best_score)   
-    return model.global_best_score
+    return model.global_best_score, model.global_best

@@ -104,4 +104,4 @@ def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, csv_f
     print('BO ended!')
     print("Final recommendation:", X_best[0])
     print("Final results:", Y_best)
-    return Y_best
+    return Y_best, X_best[0]

@@ -180,4 +180,6 @@ def Aspen_saving(cost_t, aspen, best, path_folder, filename):
     """
     path = os.path.join(path_folder, filename) + str(cost_t) + '.apw'    
     var_input(best, aspen)
-    aspen.saveas(path)            
+    aspen.saveas(path)
+    aspen.close()
+    aspen.quit()            
