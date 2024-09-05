@@ -86,7 +86,7 @@ import Setting as set
 import win32com.client as win32 
 
 def objective_function(x):
-    global aspen
+    aspen = link2aspen()
     set.var_input(x, aspen)
     status = set.get_status()
     if status == 0:
@@ -96,16 +96,13 @@ def objective_function(x):
         aspen.close()
         aspen.quit()
         time.sleep(0.5)
-        aspen = win32.Dispatch('Apwn.Document.37.0') # 40.0 for Aspen V14
-        aspen.InitFromFile2(filepath)
-        aspen.Visible = 0
-        aspen.SuppressDialogs = 1
+        aspen = link2aspen()
     return obj
 ```
 For simulator-base optimization with self-defined objective function.
 ```python
 def objective_function(x):
-    global aspen
+    aspen = link2aspen()
     set.var_input(x, aspen)
     status = set.get_status()
     if status == 0:
@@ -115,10 +112,7 @@ def objective_function(x):
         aspen.close()
         aspen.quit()
         time.sleep(0.5)
-        aspen = win32.Dispatch('Apwn.Document.37.0') # 40.0 for Aspen V14
-        aspen.InitFromFile2(filepath)
-        aspen.Visible = 0
-        aspen.SuppressDialogs = 1
+        aspen = link2aspen()
     return obj
 ```
 Use the get_status() in setting.py to check the status of simulator.
