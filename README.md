@@ -280,7 +280,9 @@ import ast
 
 ## Acknwoledge
 The primary developer is Hsuan-Han Chiu with support from the following contributors.
+
 Bor-Yih Yu (National Taiwan University)
+
 Shiau-Jeng Shen (National Taiwan University)
 
 ## References
