@@ -1,7 +1,6 @@
 import numpy as np
 import Get_variable as apvar
 import Economics as eco
-import time
 import os
 
 def var_input(Vars,aspen):        
