@@ -74,6 +74,13 @@ def objective_function(x):
         obj = set.TAC_cal(aspen)
     else:
         obj = 10e7
+        aspen.close()
+        aspen.quit()
+        time.sleep(0.5)
+        aspen = win32.Dispatch('Apwn.Document.37.0') # 40.0 for Aspen V14
+        aspen.InitFromFile2(filepath)
+        aspen.Visible = 0
+        aspen.SuppressDialogs = 1
     return obj
 ```
 For simulator-base optimization with self-defined objective function.
@@ -85,6 +92,13 @@ def objective_function(x):
         obj = set.Cal_obj(aspen)
     else:
         obj = 10e7
+        aspen.close()
+        aspen.quit()
+        time.sleep(0.5)
+        aspen = win32.Dispatch('Apwn.Document.37.0') # 40.0 for Aspen V14
+        aspen.InitFromFile2(filepath)
+        aspen.Visible = 0
+        aspen.SuppressDialogs = 1
     return obj
 ```
 Use the get_status() in setting.py to check the status of simulator.
@@ -231,3 +245,16 @@ Output_Eco=  [2789.38, 220.55, 2.45373105, 0, 0]
 IRR=         0.15
 ```
 The final MRSP will be 12.435.
+
+## Required Package
+```python
+import os
+import numpy as np
+import matplotlib.pyplot as plt
+import win32com.client as win32 
+import time
+import matplotlib.pyplot as plt
+import csv
+import  numpy_financial as npf
+import ast
+```

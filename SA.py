@@ -19,7 +19,7 @@ class SA:
         self.X_next = np.empty(shape=len(self.X_init))
         for i in range(len(self.X_init)):
             if self.index[i] == 0:
-                self.X_next[i] = np.round((self.X_init[i] + np.random.uniform(-1, 1) * self.step[i]), decimal[i])
+                self.X_next[i] = np.round((self.X_init[i] + np.random.randint(-1, 1) * self.step[i]), decimal[i])
             else:
                 self.X_next[i] = np.round(self.X_init[i] + (2 * np.random.random() - 1) * self.step[i], decimal[i])
 
@@ -38,6 +38,8 @@ def Record(n, params, score, name, wbpath, data_label):
             writer.writerow(value)
 
 def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, name, wbpath, data_label):
+    csvfile_name += '.csv'
+    wbpath += '.csv'
     accept_count = 0
     current_run = 0
     early_stop = 0

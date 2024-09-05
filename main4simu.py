@@ -6,12 +6,13 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import win32com.client as win32 
+import time
 
 
 filepath = os.path.join(os.path.abspath('.'), 'YourAspenFile.apw')
 aspen = win32.Dispatch('Apwn.Document.37.0') # 40.0 for Aspen V14
 aspen.InitFromFile2(filepath)
-aspen.Visible = 1
+aspen.Visible = 0
 aspen.SuppressDialogs = 1
 
 def objective_function(x):
@@ -21,6 +22,13 @@ def objective_function(x):
         obj = set.TAC_cal(aspen)
     else:
         obj = 10e7
+        aspen.close()
+        aspen.quit()
+        time.sleep(0.5)
+        aspen = win32.Dispatch('Apwn.Document.37.0') # 40.0 for Aspen V14
+        aspen.InitFromFile2(filepath)
+        aspen.Visible = 0
+        aspen.SuppressDialogs = 1
     return obj
 
 xMax, xMin = [36, 44, 17, 54, 30, 25, 36, 17], [20, 28, 3, 30, 10, 19, 24, 1]
