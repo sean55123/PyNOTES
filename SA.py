@@ -70,7 +70,7 @@ def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, csvfi
             if early_stop == 10:
                 break
             current_run += 1
-            Record(current_run, model.X_init, model.score, csvfile_name, wbpath, data_label, model.X_next, score)
+            Record(current_run, model.X_init, model.score, csvfile_name, wbpath, data_label)
 
         if model.T == model.T0:
             print('Initial accept rate =', 100 * accept_count / n_iterations)
