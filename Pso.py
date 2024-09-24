@@ -9,7 +9,6 @@ class PSO:
         self.size = size
         self.c1, self.c2 = c1, c2
 
-
     def initialization(self, objective_function, n_iterations, xMax, xMin, decimal):
         self.w = 0.9 - ((0.9-0.4)/n_iterations)*np.linspace(0, n_iterations, n_iterations)
         self.xMax, self.xMin = xMax, xMin
@@ -24,6 +23,7 @@ class PSO:
         self.index = (lambda x: [x//self.size, x%self.size])(np.argmin(self.local_best_score))
         self.global_best = self.local_best[self.index[0]][self.index[1]]
         self.global_best_score = self.local_best_score[self.index[0]][self.index[1]]
+        print(self.global_best_score)
 
     def fit(self, objective_function):
         self.score = []
@@ -71,19 +71,23 @@ def Record(n, params, score, name, wbpath, data_label):
 
 
 def optimize(n_iterations, xMax, xMin, decimal, objective_function, model, csvfile_name, wbpath, data_label):
+    all_file_name = csvfile_name + 'all.csv'
+    all_wbpath = wbpath + 'all.csv'
     csvfile_name += '.csv'
     wbpath += '.csv'
     model.initialization(objective_function, n_iterations, xMax, xMin, decimal)
     current_score = model.global_best_score
     early_stop = 0
     for i in range(n_iterations):
-        if i != 0 and i % 5 == 0:
-            if current_score == model.global_best_score:
-                early_stop += 1
-            else:
-                current_score = model.global_best_score
-            if early_stop == 1:
-                break
+        if early_stop == 10:
+            break
+        
+        if current_score == model.global_best_score:
+            early_stop += 1
+        else:
+            current_score = model.global_best_score
+        if early_stop == 1:
+            break
                 
         model.direction_improvement(i, objective_function)
         Record(i+1, model.global_best, model.global_best_score, csvfile_name, wbpath, data_label)
