@@ -1,6 +1,9 @@
-# NTUPSE_packs
-NTUPSE_packs is packed with several useful package for all kind of optimization (eg. simulator-based, equation-oriented).
-Specifically, Simulated annealing (SA), Particle Swarm Optimization (PSO), and Bayesian Optimization (BO) are for single objective optimization. Fuzzy, and NSGA2, on the other hand, are for multi-objective optimization. Other files, such Economic.py, Get_variable.py, can cooperate with Aspen Plus to perform optimization.
+# PyNOTES
+PyNOTES (NTU Optimization Technical Evaluation toolS) is packed with several useful package for all kind of optimization (eg. simulator-based, equation-oriented).
+
+Specifically, Simulated annealing (SA), Particle Swarm Optimization (PSO), and Bayesian Optimization (BO) are for single objective optimization. Fuzzy, and NSGA2, on the other hand, are for multi-objective optimization. 
+
+Other files, such Economic.py, Get_variable.py, can cooperate with Aspen Plus to perform optimization.
 
 
 ## Simple example for equation-oriented single objective optimization
