@@ -1,10 +1,7 @@
 from Bayesian import rbf_kernel, optimize, GaussianProcess
-# from Pso import PSO, optimize
-# from SA import SA, optimize
-import os
 import numpy as np
-import matplotlib.pyplot as plt
-
+import os
+import time
 
 def objective_function(x):
     x1 = x[0]
@@ -14,21 +11,21 @@ def objective_function(x):
 xMax, xMin = [10.0, 10.0], [-10.0, -10.0]
 decimal = [2, 2]
 n_iterations = 50
-csv_filename = 'try'
+csv_filename = 'try_new'
 wbpath = os.path.join(os.path.abspath('.'),csv_filename)
 data_label = ['num of runs', 'input 1', 'input 2', 'score1']
 
-# pso = PSO(d=2, size=40, c1=0.5, c2=0.5)
 gp = GaussianProcess(kernel=rbf_kernel)
-# sa = SA(T0=100, Tf=0.1, k=0.85, step=[3, 3], index=[0, 0], X_init=[0, 0])
 
-optimize(n_iterations,
-         xMax,
-         xMin,
-         decimal,
-         objective_function,
-         gp, 
-         csv_filename,
-         wbpath, 
-         data_label)
-
+start = time.perf_counter()
+final_population = optimize(n_iterations,
+                            xMax,
+                            xMin,
+                            decimal,
+                            objective_function,
+                            gp, 
+                            csv_filename,
+                            wbpath, 
+                            data_label)
+end = time.perf_counter()
+print(f"Required time {end - start}")
