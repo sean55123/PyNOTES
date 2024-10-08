@@ -63,10 +63,11 @@ def reactor(V, D, Ti, To, P, Q, n, index, CEPCI):
         Ti = To
 
     if Q < 0:
+        Q = np.abs(Q)
         if (To>40) & (To<130):
             Tlm = ((Ti-40)-(To-30))/np.log((Ti-40)/(To-30))
-            OPER = -Q*3600*8000*0.378/10**9
-            A = -Q/0.568/Tlm
+            OPER = Q*3600*8000*0.378/10**9
+            A = Q/0.568/Tlm
             
         elif (To>=130) & (To<170):
             if Ti-To == 0:
@@ -74,7 +75,7 @@ def reactor(V, D, Ti, To, P, Q, n, index, CEPCI):
             else:
                 Tlm = ((Ti-120)-(To-120))/np.log((Ti-120)/(To-120))  
             OPER = Q*3600*8000*(4.11/10^9-1.523/2203.04/10**6)
-            A = -Q/0.568/Tlm
+            A = Q/0.568/Tlm
         
         elif (To>=170) & (To<194): 
             if Ti-To == 0:
@@ -82,7 +83,7 @@ def reactor(V, D, Ti, To, P, Q, n, index, CEPCI):
             else:
                  Tlm = ((Ti-160)-(To-160))/np.log((Ti-160)/(To-160))
             OPER = Q*3600*8000*(4.54/10**9-1.523/2081.86/10**6)
-            A = -Q/0.568/Tlm
+            A = Q/0.568/Tlm
         
         elif (To>=194) & (To<264): 
              if Ti-To == 0:
@@ -91,7 +92,7 @@ def reactor(V, D, Ti, To, P, Q, n, index, CEPCI):
                 Tlm = ((Ti-184)-(To-184))/np.log((Ti-184)/(To-184))
              
              OPER = Q*3600*8000*(4.77/10**9-1.523/1999.72/10**6)
-             A = -Q/0.568/Tlm
+             A = Q/0.568/Tlm
         else:
             if Ti-To == 0:
                 Tlm = Ti-254
@@ -99,7 +100,7 @@ def reactor(V, D, Ti, To, P, Q, n, index, CEPCI):
                 Tlm = ((Ti-254)-(To-254))/np.log((Ti-254)/(To-254))
          
             OPER = Q*3600*8000*(5.66/10**9-1.523/1694.34/10**6)
-            A = -Q/0.568/Tlm
+            A = Q/0.568/Tlm
         
     elif Q > 0:
         if To > 174:
@@ -418,35 +419,35 @@ def exchanger(Ti, To, Q, P, CEPCI):
         if  To >= 264:
             Tlm = To-254
             OPER = Q*3600*8000*(5.66/10**9-1.523/1999.72/10**6)
-            A = -Q/0.852/Tlm
+            A = Q/0.852/Tlm
         elif To >= 194:
             Tlm = To-184
             OPER = Q*3600*8000*(4.77/10**9-1.523/1999.72/10**6)
-            A = -Q/0.852/Tlm
+            A = Q/0.852/Tlm
         elif To >= 170: 
             Tlm = To-160
             OPER = Q*3600*8000*(4.54/10**9-1.523/2081.86/10**6)
-            A = -Q/0.852/Tlm
+            A = Q/0.852/Tlm
         elif To >= 130:
             Tlm = (To-120)
-            A = -Q/0.852/Tlm
+            A = Q/0.852/Tlm
             OPER = Q*3600*8000*(4.11/10**9-1.523/2203.04/10**6)
         elif To >= 47:
             Tlm = ((Ti-40)-(To-30))/np.log((Ti-40)/(To-30))
-            OPER = -Q*3600*8000*0.378/10**9
-            A = -Q/0.852/Tlm
+            OPER = Q*3600*8000*0.378/10**9
+            A = Q/0.852/Tlm
         elif To >= 16:
             Tlm = ((Ti-15)-(To-5))/np.log((Ti-15)/(To-5))
-            A = -Q/0.852/Tlm
-            OPER = -Q*3600*8000*4.77/10**9
+            A = Q/0.852/Tlm
+            OPER = Q*3600*8000*4.77/10**9
         elif To >= -17:
             Tlm = ((Ti-(-19))-(To-(-20)))/np.log((Ti-(-19))/(To-(-20)))
-            A = -Q/0.852/Tlm
-            OPER = -Q*3600*8000*7.89/10**9
+            A = Q/0.852/Tlm
+            OPER = Q*3600*8000*7.89/10**9
         elif To >= -46:
             Tlm = ((Ti-(-48))-(To-(-49)))/np.log((Ti-(-48))/(To-(-49)))
-            A = -Q/0.852/Tlm
-            OPER = -Q*3600*8000*13.11/10**9
+            A = Q/0.852/Tlm
+            OPER = Q*3600*8000*13.11/10**9
         else:
             A = 10^4
             OPER = 10^8
