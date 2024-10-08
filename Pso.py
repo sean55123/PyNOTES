@@ -19,6 +19,11 @@ class PSO:
         
         self.position = np.random.uniform(self.xMin, self.xMax, (self.size, self.d))
         self.velocity = np.random.uniform(self.vMin, self.vMax, (self.size, self.d))
+        
+        for dim in range(self.d):
+            self.position[:, dim] = np.round(self.position[:, dim], decimals=self.decimal[dim])
+            self.velocity[:, dim] = np.round(self.velocity[:, dim], decimals=self.decimal[dim])
+        
         self.score = np.apply_along_axis(objective_function, 1, self.position)
         
         self.local_best = np.copy(self.position)
@@ -34,12 +39,14 @@ class PSO:
         self.velocity = (w * self.velocity
                          + self.c1 * r1 * (self.local_best - self.position)
                          + self.c2 * r2 * (self.global_best - self.position))
-        
         self.velocity = np.clip(self.velocity, self.vMin, self.vMax)
+        for dim in range(self.d):
+            self.velocity[:, dim] = np.round(self.velocity[:, dim], decimals=self.decimal[dim])
+        
         self.position += self.velocity
         self.position = np.clip(self.position, self.xMin, self.xMax)
-        
-        self.score = np.apply_along_axis(objective_function, 1, self.position)
+        for dim in range(self.d):
+            self.position[:, dim] = np.round(self.position[:, dim], decimals=self.decimal[dim])
         
         improved = self.score < self.local_best_score
         self.local_best[improved] = self.position[improved]
