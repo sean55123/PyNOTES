@@ -10,7 +10,6 @@ class SA:
         self.step = np.array(step)
         self.index = np.array(index)
         self.X_init = np.array(X_init)
-        self.dimension = len(self.X_init)
 
     def preheating(self, objective_function):
         self.T = self.T0
@@ -19,29 +18,23 @@ class SA:
     def fit(self, decimal, xMax, xMin):
         xMax = np.array(xMax)
         xMin = np.array(xMin)
-        decimal = np.array(decimal)
+        decimal = np.array(decimal, dtype=int)
         
-        # Generate random steps based on index
-        r = np.zeros(self.dimension)
+        r = np.zeros(len(self.X_init))
         index_zero = (self.index == 0)
         index_nonzero = (self.index != 0)
-
-        # For index == 0
         r[index_zero] = np.random.randint(-1, 2, size=np.sum(index_zero))
-
-        # For index != 0
         r[index_nonzero] = 2 * np.random.rand(np.sum(index_nonzero)) - 1
-
-        # Update positions
         self.X_next = self.X_init + r * self.step
 
-        # Round to specified decimals
-        scale = np.power(10.0, decimal)
-        self.X_next = np.round(self.X_next * scale) / scale
-
-        # Clip to bounds
+        for i in range(len(self.X_next)):
+            if decimal[i] == 0:
+                self.X_next[i] = int(np.round(self.X_next[i]))
+            else:
+                self.X_next[i] = round(self.X_next[i], decimal[i]) 
+        
         self.X_next = np.clip(self.X_next, xMin, xMax)
-
+        
 def Record(n, params, score, name, wbpath, data_label):
     value = [n] + list(params) + [score]
     if os.path.isfile(wbpath):
