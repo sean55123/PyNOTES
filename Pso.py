@@ -47,6 +47,8 @@ class PSO:
         self.position = np.clip(self.position, self.xMin, self.xMax)
         for dim in range(self.d):
             self.position[:, dim] = np.round(self.position[:, dim], decimals=self.decimal[dim])
+            
+        self.score = np.apply_along_axis(objective_function, 1, self.position)
         
         improved = self.score < self.local_best_score
         self.local_best[improved] = self.position[improved]
