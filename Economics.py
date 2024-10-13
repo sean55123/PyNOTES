@@ -63,10 +63,9 @@ def reactor(V, D, Ti, To, P, Q, n, index, CEPCI):
         Ti = To
 
     if Q < 0:
-        Q = np.abs(Q)
         if (To>40) & (To<130):
             Tlm = ((Ti-40)-(To-30))/np.log((Ti-40)/(To-30))
-            OPER = Q*3600*8000*0.378/10**9
+            OPER = -Q*3600*8000*0.378/10**9
             A = Q/0.568/Tlm
             
         elif (To>=130) & (To<170):
@@ -272,7 +271,6 @@ def column(D, NT, Tt, Tb, Qc, Qr, P, CEPCI):
     FBM_Tray = 1
     CBM_Tray = Cp_Tray*float(NT)*FBM_Tray*Fq/1000
 
-    Qc = np.abs(Qc)
     if Tt >= 194:
         Cond1lm = Tt-184
         Opt_C = Qc*3600*8000*(4.77/10**9-1.523/1999.72/10**6)
@@ -287,20 +285,20 @@ def column(D, NT, Tt, Tb, Qc, Qr, P, CEPCI):
         Opt_C = Qc*3600*8000*(4.11/10**9-1.523/2203.04/10**6)
     elif Tt >= 47:
         Cond1lm = ((Tt-40)-(Tt-30))/np.log((Tt-40)/(Tt-30))
-        Opt_C = Qc*3600*8000*0.378/10**9
+        Opt_C = -Qc*3600*8000*0.378/10**9
         Ac = Qc/0.852/Cond1lm
     elif Tt >= 16:
         Cond1lm = ((Tt-15)-(Tt-5))/np.log((Tt-15)/(Tt-5))
         Ac = Qc/0.852/Cond1lm
-        Opt_C = Qc*3600*8000*4.77/10**9
+        Opt_C = -Qc*3600*8000*4.77/10**9
     elif Tt >= -17:
         Cond1lm = ((Tt-(-20))-(Tt-(-19)))/np.log((Tt-(-20))/(Tt-(-19)))
         Ac = Qc/0.852/Cond1lm
-        Opt_C = Qc*3600*8000*7.89/10**9
+        Opt_C = -Qc*3600*8000*7.89/10**9
     elif Tt >= -46:
         Cond1lm = ((Tt-(-49))-(Tt-(-48)))/np.log((Tt-(-49))/(Tt-(-48)))
         Ac = Qc/0.852/Cond1lm
-        Opt_C = Qc*3600*8000*13.11/10**9
+        Opt_C = -Qc*3600*8000*13.11/10**9
     elif Qc == 0:
         Ac = 0
         Opt_C = 0
@@ -415,7 +413,6 @@ def exchanger(Ti, To, Q, P, CEPCI):
         List: [Captital cost, Operating cost]
     """
     if Q < 0:
-        Q = np.abs(Q)
         if  To >= 264:
             Tlm = To-254
             OPER = Q*3600*8000*(5.66/10**9-1.523/1999.72/10**6)
@@ -434,20 +431,20 @@ def exchanger(Ti, To, Q, P, CEPCI):
             OPER = Q*3600*8000*(4.11/10**9-1.523/2203.04/10**6)
         elif To >= 47:
             Tlm = ((Ti-40)-(To-30))/np.log((Ti-40)/(To-30))
-            OPER = Q*3600*8000*0.378/10**9
+            OPER = -Q*3600*8000*0.378/10**9
             A = Q/0.852/Tlm
         elif To >= 16:
             Tlm = ((Ti-15)-(To-5))/np.log((Ti-15)/(To-5))
             A = Q/0.852/Tlm
-            OPER = Q*3600*8000*4.77/10**9
+            OPER = -Q*3600*8000*4.77/10**9
         elif To >= -17:
             Tlm = ((Ti-(-19))-(To-(-20)))/np.log((Ti-(-19))/(To-(-20)))
             A = Q/0.852/Tlm
-            OPER = Q*3600*8000*7.89/10**9
+            OPER = -Q*3600*8000*7.89/10**9
         elif To >= -46:
             Tlm = ((Ti-(-48))-(To-(-49)))/np.log((Ti-(-48))/(To-(-49)))
             A = Q/0.852/Tlm
-            OPER = Q*3600*8000*13.11/10**9
+            OPER = -Q*3600*8000*13.11/10**9
         else:
             A = 10^4
             OPER = 10^8
