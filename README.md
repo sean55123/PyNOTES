@@ -1,5 +1,5 @@
 # PyNOTES
-PyNOTES (NTU Optimization Technical Evaluation toolS) is packed with several useful package for all kind of optimization (eg. simulator-based, equation-oriented).
+PyNOTES (NTU Optimization Technical Evaluation toolS) is an useful packages for various optimization technique tools(eg. simulator-based, equation-oriented).
 
 Specifically, Simulated annealing (SA), Particle Swarm Optimization (PSO), and Bayesian Optimization (BO) are for single objective optimization. Fuzzy, and NSGA2, on the other hand, are for multi-objective optimization. 
 
@@ -277,7 +277,7 @@ import win32com.client as win32
 import time
 import matplotlib.pyplot as plt
 import csv
-import  numpy_financial as npf
+import numpy_financial as npf
 import ast
 ```
 
