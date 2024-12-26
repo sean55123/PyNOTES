@@ -3,22 +3,31 @@ In techno-economic analysis TEA.py and TEA_main.py would be needed.
 Fortunately, there would be any of the modifications required in TEA.py, all you have to do is adding TCC, TOC, TWC, TMC to the TEA_main.py.
 ```python
 def cost(UP):
-    HPA = 28.04
     Revenue = round(HPA*UP*8000/1000,2)
-    TCC     = 220.55
-    TOC     = 2.45373105
-    TMC     = 0
-    W1 = 10.76 + 0.031 + 0.034 + 0.618 + 0.213 + 0.0884 
-    W2 = 7.3
-    TWC1     = round((W1*3600)*(41/1000) *8000/1000, 2)
-    TWC2     = round((W2*3600)*(56/1000) *8000/1000, 2)
-    TWC = TWC1 + TWC2
     Output_Eco = [Revenue, TCC, TOC, TMC, TWC]
     
     return Output_Eco 
 ```
 After filling the cost index, you will have to change the P (Number of units handling particulates or solids) and Nnp (Number of units handling fluids). Finally, guessing UP letting the results converge. 
+
+HPA: the mass flowrate of your product (kg/hr)
+TCC: Total capital cost (kUSD)
+TOC: Total operating cost (kUSD/yr)
+TMC: Total material cost (kUSD/yr)
+W1, W2: Different level of waste mass flowrate (kg/hr)
+TWC1, TWC2: Different level of waste treatment cost (kUSD/yr)
 ```python
+CEPCI
+HPA = 28.04
+TCC     = 220.55
+TOC     = 2.45373105
+TMC     = 0
+W1 = 10.76 + 0.031 + 0.034 + 0.618 + 0.213 + 0.0884 
+W2 = 7.3
+TWC1     = round((W1*3600)*(41/1000) *8000/1000, 2)
+TWC2     = round((W2*3600)*(56/1000) *8000/1000, 2)
+TWC = TWC1 + TWC2
+
 FCI_fact  = 0.18
 Tax_rate  = 0.35
 d_ratio   = [0.2,0.32,0.192,0.1152,0.1152,0.0576]
@@ -26,10 +35,9 @@ Cons_per  = 2
 Proj_life  = 12
 P          = 0
 Nnp        = 50
-UP         = 1
-Output_Eco = cost(UP)
-IRR        = TEA.TEA(Output_Eco, FCI_fact, Tax_rate, d_ratio, Cons_per, Proj_life, P, Nnp)
+UP         = 100
 IRR_Target = 0.15
+TWC = 0
 ```
 For example, in this case by guessing UP to 1, the result will not converge.
 ```python

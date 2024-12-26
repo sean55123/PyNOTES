@@ -20,8 +20,8 @@ P          = 0
 Nnp        = 50
 UP         = 100
 IRR_Target = 0.15
-
 TWC = 0
+
 def cost(UP):
     """
     Four indexes should be considered

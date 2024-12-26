@@ -16,39 +16,29 @@ Asepn V12.1 -> 39.0
 Aspen V14 -> 40.0
 
 ```python
-def link2aspen():
-    global filepath
-    filepath = os.path.join(os.path.abspath('.'), 'YourAspenFile.apw')
-    aspen = win32.Dispatch('Apwn.Document.37.0') # 40.0 for Aspen V14
-    aspen.InitFromFile2(filepath)
-    aspen.Visible = 0
-    aspen.SuppressDialogs = 1
-    return aspen
-```
-The objective function for simulator-based optimization is as followed.
-
-```python
-import Setting as set
-import win32com.client as win32 
+import Pynotes.Setting as set
 
 def objective_function(x):
-    aspen = link2aspen()
+    global filepath
+    aspen, filepath = link2aspen('YourAspenFile.apw')
     set.var_input(x, aspen)
     status = set.get_status()
     if status == 0:
         obj = set.TAC_cal(aspen)
+        obj = [obj, status]
     else:
-        obj = 10e7
+        obj = [10e7, status]
         aspen.close()
         aspen.quit()
         time.sleep(0.5)
-        aspen = link2aspen()
+        aspen, filepath = link2aspen('YourAspenFile.apw')
     return obj
 ```
 For simulator-base optimization with self-defined objective function.
 ```python
 def objective_function(x):
-    aspen = link2aspen()
+    global filepath
+    aspen, filepath = link2aspen('YourAspenFile.apw')
     set.var_input(x, aspen)
     status = set.get_status()
     if status == 0:
@@ -58,7 +48,7 @@ def objective_function(x):
         aspen.close()
         aspen.quit()
         time.sleep(0.5)
-        aspen = link2aspen()
+        aspen, filepath = link2aspen('YourAspenFile.apw')
     return obj
 ```
 Use the get_status() in setting.py to check the status of simulator.
@@ -92,6 +82,6 @@ def get_status(aspen, Display=1):
 ```
 Finally, use the Aspen_saving() function to save the final result.
 ```python
-aspen = link2aspen()
+aspen = link2aspen('YourAspenFile.apw')[0]
 set.Aspen_saving(cost_t, aspen, params, filepath, 'Results')
 ```

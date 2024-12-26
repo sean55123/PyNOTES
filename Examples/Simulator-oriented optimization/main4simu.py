@@ -1,14 +1,11 @@
-# from Bayesian import rbf_kernel, optimize, GaussianProcess
-from Pso import PSO, optimize
-# from SA import SA, optimize
-from Aspen_commander import link2aspen
-import Setting as set
+from Pynotes.Pso import PSO, optimize
+from Pynotes.Aspen_commander import link2aspen
+import Pynotes.Setting as set
 import os
 import numpy as np
 import matplotlib.pyplot as plt
 import win32com.client as win32 
 import time
-
 
 def objective_function(x):
     global filepath
@@ -23,7 +20,7 @@ def objective_function(x):
         aspen.close()
         aspen.quit()
         time.sleep(0.5)
-        aspen = link2aspen()
+        aspen, filepath = link2aspen('YourAspenFile.apw')
     return obj
 
 xMax, xMin = [36, 44, 17, 54, 30, 25, 36, 17], [20, 28, 3, 30, 10, 19, 24, 1]
@@ -51,5 +48,5 @@ end_time = time.perf_counter()
 cost_t = round(end_time - start_time, 1)
 
 folder_path = os.path.dirname(filepath)
-aspen = link2aspen()
+aspen = link2aspen('YourAspenFile.apw')[0]
 set.Aspen_saving(cost_t, aspen, params, folder_path, 'Results')

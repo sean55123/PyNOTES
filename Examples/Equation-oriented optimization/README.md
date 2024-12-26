@@ -2,9 +2,9 @@
 Single objective optimization should start from main.py
 You have to choose the method that you plan to use and import packages from them.
 ```python
-from Bayesian import rbf_kernel, optimize, GaussianProcess
-from Pso import PSO, optimize
-from SA import SA, optimize
+from Pynotes.Bayesian import rbf_kernel, optimize, GaussianProcess
+from Pynotes.Pso import PSO, optimize
+from Pynotes.SA import SA, optimize
 ``` 
 After importing you have to design the objective function on your own.
 For equation-oriented optimization.
