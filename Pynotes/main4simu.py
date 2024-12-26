@@ -1,6 +1,7 @@
 # from Bayesian import rbf_kernel, optimize, GaussianProcess
-from Pso_old import PSO, optimize
+from Pso import PSO, optimize
 # from SA import SA, optimize
+from Aspen_commander import link2aspen
 import Setting as set
 import os
 import numpy as np
@@ -8,17 +9,10 @@ import matplotlib.pyplot as plt
 import win32com.client as win32 
 import time
 
-def link2aspen():
-    global filepath
-    filepath = os.path.join(os.path.abspath('.'), 'YourAspenFile.apw')
-    aspen = win32.Dispatch('Apwn.Document.37.0') # 40.0 for Aspen V14
-    aspen.InitFromFile2(filepath)
-    aspen.Visible = 0
-    aspen.SuppressDialogs = 1
-    return aspen
 
 def objective_function(x):
-    aspen = link2aspen()
+    global filepath
+    aspen, filepath = link2aspen('YourAspenFile.apw')
     set.var_input(x, aspen)
     status = set.get_status()
     if status == 0:
