@@ -2,7 +2,7 @@ import os
 import numpy as np
 import TEA as TEA
 
-CEPCI     = 821.1
+CEPCI = 821.1
 def cost(UP):
     """
     Four indexes should be considered
@@ -11,7 +11,7 @@ def cost(UP):
     CRM: Total raw material cost
     CWT: Waste treatment
 
-    It would be faster to calculate all the expenditures in advance then feed it into this model.
+    It would be faster to calculate all the expenditures in advance than feed it into this model.
     Args:
         UP (Float): Unit prices
 

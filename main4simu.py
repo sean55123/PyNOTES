@@ -1,5 +1,5 @@
 # from Bayesian import rbf_kernel, optimize, GaussianProcess
-from Pso import PSO, optimize
+from Pso_old import PSO, optimize
 # from SA import SA, optimize
 import Setting as set
 import os
@@ -23,8 +23,9 @@ def objective_function(x):
     status = set.get_status()
     if status == 0:
         obj = set.TAC_cal(aspen)
+        obj = [obj, status]
     else:
-        obj = 10e7
+        obj = [10e7, status]
         aspen.close()
         aspen.quit()
         time.sleep(0.5)

@@ -18,6 +18,7 @@ class PSO:
         self.vMax = 0.2 * (self.xMax - self.xMin)
         
         self.position = np.random.uniform(self.xMin, self.xMax, (self.size, self.d))
+        print(self.position)
         self.velocity = np.random.uniform(self.vMin, self.vMax, (self.size, self.d))
         
         for dim in range(self.d):
@@ -47,7 +48,7 @@ class PSO:
         self.position = np.clip(self.position, self.xMin, self.xMax)
         for dim in range(self.d):
             self.position[:, dim] = np.round(self.position[:, dim], decimals=self.decimal[dim])
-            
+        
         self.score = np.apply_along_axis(objective_function, 1, self.position)
         
         improved = self.score < self.local_best_score
