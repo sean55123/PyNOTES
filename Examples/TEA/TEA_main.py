@@ -1,7 +1,5 @@
 import numpy as np
-import TEA as TEA
-
-
+import Pynotes.TEA as TEA
 
 CEPCI   = 821.1
 HPA     = 28.04
