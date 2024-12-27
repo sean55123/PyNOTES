@@ -3,6 +3,9 @@ import os
 import Get_variable as apvar
 import Economics as eco
 import numpy as np
+import logging
+
+logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def link2aspen(Aspen_file, Visible=0, SuppressDialogs=1, Dispatch=37):
     filepath = os.path.join(os.path.abspath('.'), Aspen_file)
@@ -30,7 +33,14 @@ def TAC_cal(aspen):
     
     # Calculate Capital Cost of Distillation Tower
     for bname in [item.name for item in aspen.Tree.FindNode(r'\Data\Blocks').Elements if item.AttributeValue(6)=='RadFrac']:
-        D = aspen.Application.Tree.FindNode(fr"\Data\Blocks\{bname}\Subobjects\Column Internals\INT-1\Subobjects\Sections\CS-1\Input\CA_DIAM\INT-1\CS-1").Value
+
+        node = aspen.Application.Tree.FindNode(fr"\Data\Blocks\{bname}\Subobjects\Column Internals\INT-1\Subobjects\Sections\CS-1\Input\CA_DIAM\INT-1\CS-1")
+        if node is None:
+            logging.error(f"Default column diameter is used. '{bname}' needs to set the column internal specification")
+            D = 0.68  # Assign default value or handle as needed
+        else:
+            D = node.Value
+        
         V, NT, Tt, Tb, Qc, Qr, P = apvar.getvar_column(D, bname, aspen)
         cap_c, oper_c = eco.column(D, NT, Tt, Tb, Qc, Qr, P, CEPCI)
         capital_cost_dict[bname] = cap_c
