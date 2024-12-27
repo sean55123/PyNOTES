@@ -2,8 +2,6 @@
 For Simulator-based optimiation, you have to call your simulator in objective function.
 In this example a process optimization taking TAC as objective is used as example.
 
-Noted!! Setting.py can be used to input variables to Aspen Plus, checking result status, and calculate objective function.
-
 The link2apsen() function can help you link Aspen with Python.
 All you need to change is the name of the file and the dispatch number for specific Aspen dispatch.
 
