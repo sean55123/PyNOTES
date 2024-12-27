@@ -16,15 +16,15 @@ Asepn V12.1 -> 39.0
 Aspen V14 -> 40.0
 
 ```python
-import Pynotes.Setting as set
+from Pynotes.Aspen_commander import link2aspen, TAC_cal, Aspen_saving
 
 def objective_function(x):
     global filepath
     aspen, filepath = link2aspen('YourAspenFile.apw')
-    set.var_input(x, aspen)
-    status = set.get_status()
+    var_input(x, aspen)
+    status = get_status()
     if status == 0:
-        obj = set.TAC_cal(aspen)
+        obj = TAC_cal(aspen) # Self-deifined objective please use Cal_obj function
         obj = [obj, status]
     else:
         obj = [10e7, status]
@@ -39,10 +39,10 @@ For simulator-base optimization with self-defined objective function.
 def objective_function(x):
     global filepath
     aspen, filepath = link2aspen('YourAspenFile.apw')
-    set.var_input(x, aspen)
-    status = set.get_status()
+    var_input(x, aspen)
+    status = get_status()
     if status == 0:
-        obj = set.Cal_obj(aspen)
+        obj = Cal_obj(aspen)
     else:
         obj = 10e7
         aspen.close()
@@ -83,5 +83,5 @@ def get_status(aspen, Display=1):
 Finally, use the Aspen_saving() function to save the final result.
 ```python
 aspen = link2aspen('YourAspenFile.apw')[0]
-set.Aspen_saving(cost_t, aspen, params, filepath, 'Results')
+Aspen_saving(cost_t, aspen, params, filepath, 'Results')
 ```
