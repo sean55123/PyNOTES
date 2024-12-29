@@ -5,13 +5,9 @@ Specifically, Simulated annealing (SA), Particle Swarm Optimization (PSO), and B
 
 Other files, such Economic.py, Get_variable.py, can cooperate with Aspen Plus to perform optimization.
 
-## Required Package
+## Installation
 ```bash
 pip install -r requirements.txt
-```
-or intall through 
-```bash
-pip install Pynotes
 ```
 
 ## Acknwoledge
