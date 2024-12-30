@@ -1,0 +1,393 @@
+
+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
+ + +                                                                         + +
+ + +                      ASPEN PLUS CALCULATION HISTORY                     + +
+ + +                                                                         + +
+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
+
+ ASPEN PLUS IS A TRADEMARK OF           HOTLINE:
+ ASPEN TECHNOLOGY, INC.                 U.S.A. 888/996-7100
+ 781/221-6400                           EUROPE (44) 1189-226555
+
+ PLATFORM: WIN-X64                                       DECEMBER 31, 2024   
+ VERSION: 40.0   Build 359                               TUESDAY     
+ INSTALLATION:                                           3:19:05 A.M.        
+
+ THIS COPY OF ASPEN PLUS LICENSED TO NATIONAL TAIWAN UNIV            
+
+
+      ASPEN PLUS (R) IS A PROPRIETARY PRODUCT OF ASPEN TECHNOLOGY, INC.
+      (ASPENTECH), AND MAY BE USED ONLY UNDER AGREEMENT WITH ASPENTECH.
+      RESTRICTED RIGHTS LEGEND:  USE, REPRODUCTION, OR DISCLOSURE BY THE
+      U.S. GOVERNMENT IS SUBJECT TO RESTRICTIONS SET FORTH IN 
+      (i) FAR 52.227-14, Alt. III, (ii) FAR 52.227-19, (iii) DFARS 
+      252.227-7013(c)(1)(ii), or (iv) THE ACCOMPANYING LICENSE AGREEMENT,
+      AS APPLICABLE. FOR PURPOSES OF THE FAR, THIS SOFTWARE SHALL BE DEEMED
+      TO BE "UNPUBLISHED" AND LICENSED WITH DISCLOSURE PROHIBITIONS.
+      CONTRACTOR/SUBCONTRACTOR: ASPEN TECHNOLOGY, INC. 20 CROSBY DRIVE,
+      BEDFORD, MA 01730.
+ *** INPUT SUMMARY ***
+
+ >>CURRENT RUN
+
+   ORIGINAL RUN                           DECEMBER 31, 2024   
+   3:19:05 A.M.                           TUESDAY     
+   INPUT FILE: _1159hfl.inm
+   RUN ID : _1159hfl
+          1    ;
+          2    ;Input file created by Aspen Plus Rel. 40.0 at 03:19:04 Tue Dec 31, 2024
+          3    ;Directory C:\Users\TEMP.DESKTOP-TVCG9UV.002\Documents\AspenTech\Aspen Plus V14.0  Runid EXAMPLE
+          4    ;
+          5
+          6
+          7    DYNAMICS
+          8        DYNAMICS RESULTS=ON
+          9
+         10    IN-UNITS MET PRESSURE=bar TEMPERATURE=C DELTA-T=C PDROP=bar  &
+         11            INVERSE-PRES='1/bar' SHORT-LENGTH=mm
+         12
+         13    DEF-STREAMS CONVEN ALL
+         14
+         15    MODEL-OPTION
+         16
+         17    DATABANKS 'APV140 PURE40' / 'APV140 AQUEOUS' / 'APV140 SOLIDS' &
+         18             / 'APV140 INORGANIC' / 'APESV140 AP-EOS' /  &
+         19            'NISTV140 NIST-TRC' / NOASPENPCD
+         20
+         21    PROP-SOURCES 'APV140 PURE40' / 'APV140 AQUEOUS' /  &
+         22            'APV140 SOLIDS' / 'APV140 INORGANIC' / 'APESV140 AP-EOS' &
+         23             / 'NISTV140 NIST-TRC'
+         24
+         25    COMPONENTS
+         26        H2O H2O /
+         27        C2H5OH C2H6O-2
+         28
+         29    SOLVE
+         30        RUN-MODE MODE=SIM
+         31
+         32    FLOWSHEET
+         33        BLOCK DIST IN=INPUT OUT=CH3OH H2O
+         34
+         35    PROPERTIES NRTL
+         36
+         37    PROP-DATA NRTL-1
+         38        IN-UNITS MET PRESSURE=bar TEMPERATURE=C DELTA-T=C PDROP=bar  &
+         39            INVERSE-PRES='1/bar' SHORT-LENGTH=mm
+         40        PROP-LIST NRTL
+         41        BPVAL H2O C2H5OH 3.457800000 -586.0809000 .3000000000 0.0  &
+         42            0.0 0.0 24.99000000 100.0000000
+         43        BPVAL C2H5OH H2O -.8009000000 246.1800000 .3000000000 0.0  &
+         44            0.0 0.0 24.99000000 100.0000000
+         45
+         46    STREAM INPUT
+         47        SUBSTREAM MIXED TEMP=40. PRES=1.
+         48        MOLE-FLOW H2O 100. / C2H5OH 100.
+         49
+         50    BLOCK DIST RADFRAC
+         51        PARAM NSTAGE=20 ALGORITHM=STANDARD MAXOL=25 DAMPING=NONE
+         52        COL-CONFIG CONDENSER=PARTIAL-V
+         53        FEEDS INPUT 10 ON-STAGE
+         54        PRODUCTS CH3OH 1 V / H2O 20 L
+         55        P-SPEC 1 1.
+         56        COL-SPECS DP-STAGE=0.0068 MOLE-D=100. MOLE-RR=1.
+         57
+         58    EO-CONV-OPTI
+         59
+         60    STREAM-REPOR MOLEFLOW
+         61    ;
+         62    ;
+         63    ;
+         64    ;
+         65    ;
+ *** INPUT TRANSLATOR MESSAGES ***
+
+  *** THIS RUN USES THE PROPERTIES ENTERPRISE DATABASE ***
+      SQLLOCALDB.APESV140 : (DATAVERSION - 40.0.0.13)                         
+      SQLLOCALDB.APV140 : (DATAVERSION - 40.0.0.13)                           
+      SQLLOCALDB.FACTV140 : (DATAVERSION - 40.0.0.12)                         
+      SQLLOCALDB.NISTV140 : (DATAVERSION - 40.0.0.12)                         
+ 
+ 
+
+ PDF updated                                                                      TIME =      0.63
+
+ *** CALCULATION TRACE ***
+
+
+ *** FLOWSHEET ANALYSIS MESSAGES ***
+
+ FLOWSHEET CONNECTIVITY BY STREAMS       
+
+   STREAM     SOURCE     DEST           STREAM     SOURCE     DEST
+   INPUT      ----       DIST           CH3OH      DIST       ----    
+   H2O        DIST       ----                                         
+
+ FLOWSHEET CONNECTIVITY BY BLOCKS        
+
+   BLOCK        INLETS                         OUTLETS
+   DIST         INPUT                          CH3OH H2O                   
+
+      COMPUTATION ORDER FOR THE FLOWSHEET IS:
+      DIST 
+
+Calculations begin                                                              time      0.23
+
+
+ SIMULATION CALCULATIONS BEGIN                                                    TIME =      0.23
+
+      ENTHALPY CALCULATION FOR INLET STREAM INPUT OF BLOCK DIST                   TIME =      0.23
+      KODE = 2  NTRIAL =   2  T = 313.1500  P =  100000.      V =  0.00000      Q =  0.00000    
+
+      UOS BLOCK DIST     MODEL: RADFRAC                                           TIME =      0.23
+
+  *   WARNING WHILE EXECUTING UNIT OPERATIONS BLOCK: "DIST" (MODEL: "RADFRAC")  
+                                                               (UDL03A.7260)    
+      FEED PRESSURE  0.10000E+06 (N/SQM) OF STREAM INPUT                        
+      IS LOWER THAN STAGE  10 PRESSURE  0.10612E+06 (N/SQM).                    
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    4      1334.7    
+          2    1    4      370.23    
+          3    1    3      261.62    
+          4    1    3      183.01    
+          5    1    3      25.277    
+          6    1    3      13.773    
+          7    1    3      8.3709    
+          8    1    3      5.7650    
+          9    1    3      4.4120    
+         10    1    2      1.4860    
+         11    1    2     0.45567    
+
+ Report Writer entered                                                            Time =      0.27
+
+ Results generated                                                                Time =      0.31
+
+
+*** INPUT SPECIFICATION MESSAGES ***
+
+ CHANGES WERE MADE TO STREAM       INPUT    12/31/2024   03:19:36:99 
+ STREAM INPUT
+     SUBSTREAM MIXED TEMP=40. PRES=1.5
+     MOLE-FLOW H2O 100. / C2H5OH 100.
+
+ PDF updated                                                                      TIME =     31.57
+ THIS COPY OF ASPEN PLUS LICENSED TO NATIONAL TAIWAN UNIV            
+ 
+ 
+
+
+Calculations begin                                                              time     31.57
+
+
+      ENTHALPY CALCULATION FOR INLET STREAM INPUT OF BLOCK DIST                   TIME =     31.57
+      KODE = 2  NTRIAL =   2  T = 313.1500  P =  150000.      V =  0.00000      Q =  0.00000    
+
+      UOS BLOCK DIST     MODEL: RADFRAC                                           TIME =     31.57
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    3     0.43334    
+
+      CHECKING PHASE EQUILIBRIUM RESULTS                                          TIME =     31.58
+
+      CHECKING PHASE EQUILIBRIUM RESULTS                                          TIME =     31.58
+
+ Report Writer entered                                                            Time =     31.58
+
+ Results generated                                                                Time =     31.60
+
+RUN SAVED
+
+
+
+ *** SUMMARY OF ERRORS ***
+
+                  PHYSICAL
+                  PROPERTY  SYSTEM  SIMULATION
+ TERMINAL ERRORS      0        0         0
+   SEVERE ERRORS      0        0         0
+          ERRORS      0        0         0
+        WARNINGS      0        0         1
+
+
+ *** SUMMARY OF ERRORS ***
+
+                  PHYSICAL
+                  PROPERTY  SYSTEM  SIMULATION
+ TERMINAL ERRORS      0        0         0
+   SEVERE ERRORS      0        0         0
+          ERRORS      0        0         0
+        WARNINGS      0        0         1
+
+RUN SAVED
+
+
+
+ *** SUMMARY OF ERRORS ***
+
+                  PHYSICAL
+                  PROPERTY  SYSTEM  SIMULATION
+ TERMINAL ERRORS      0        0         0
+   SEVERE ERRORS      0        0         0
+          ERRORS      0        0         0
+        WARNINGS      0        0         1
+
+
+ *** SUMMARY OF ERRORS ***
+
+                  PHYSICAL
+                  PROPERTY  SYSTEM  SIMULATION
+ TERMINAL ERRORS      0        0         0
+   SEVERE ERRORS      0        0         0
+          ERRORS      0        0         0
+        WARNINGS      0        0         1
+
+
+*** INPUT SPECIFICATION MESSAGES ***
+
+ CHANGES WERE MADE TO BLOCK        DIST     12/31/2024   03:21:43:99 
+ BLOCK DIST RADFRAC
+     PARAM NSTAGE=20 ALGORITHM=STANDARD HYDRAULIC=YES MAXOL=25  &
+         DAMPING=NONE
+     COL-CONFIG CONDENSER=PARTIAL-V
+     FEEDS INPUT 10 ON-STAGE
+     PRODUCTS CH3OH 1 V / H2O 20 L
+     P-SPEC 1 1.
+     COL-SPECS DP-STAGE=0.0068 MOLE-D=100. MOLE-RR=1.
+     REPORT HYDRAULIC
+
+ PDF updated                                                                      TIME =    158.53
+ THIS COPY OF ASPEN PLUS LICENSED TO NATIONAL TAIWAN UNIV            
+ 
+ 
+
+
+Calculations begin                                                              time    158.54
+
+
+      UOS BLOCK DIST     MODEL: RADFRAC                                           TIME =    158.54
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    3     0.33384    
+
+      CHECKING PHASE EQUILIBRIUM RESULTS                                          TIME =    158.54
+
+      CHECKING PHASE EQUILIBRIUM RESULTS                                          TIME =    158.54
+
+ Report Writer entered                                                            Time =    158.55
+
+ Results generated                                                                Time =    158.56
+
+
+*** INPUT SPECIFICATION MESSAGES ***
+
+ CHANGES WERE MADE TO BLOCK        DIST     12/31/2024   03:22:59:99 
+ BLOCK DIST RADFRAC
+     SUBOBJECTS INTERNALS = CS-1
+     PARAM NSTAGE=20 ALGORITHM=STANDARD HYDRAULIC=NO MAXOL=25  &
+         DAMPING=NONE
+     PARAM2 STATIC-DP=YES
+     COL-CONFIG CONDENSER=PARTIAL-V CA-CONFIG=INT-1
+     FEEDS INPUT 10 ON-STAGE
+     PRODUCTS CH3OH 1 V / H2O 20 L
+     P-SPEC 1 1.
+     COL-SPECS DP-STAGE=0.0068 MOLE-D=100. MOLE-RR=1.
+     REPORT NOHYDRAULIC
+     INTERNALS CS-1 STAGE1=2 STAGE2=19 P-UPDATE=NO  &
+         TRAYTYPE=SIEVE NPASS=1 SYSFAC=1.000000000  &
+         OVER-DESIGN=1.000000000 WEIR-HT=50.80000000 <mm>  &
+         DC-CLEAR=38.10000000 <mm> DC-WTOP-SIDE=164.8459184 <mm>  &
+         DC-WBOT-SIDE=164.8459184 <mm> HOLE-DIAM=12.70000000 <mm>  &
+         HOLE-AREA=.1000000000 FLOOD-METH=GLITSCH6  &
+         DECK-THICK=0.134 <IN> PCT-FLOOD-FA=80.00000000  &
+         AER-PARAM-M=1.000000000 MAX-DC-LOAD=GLITSCH  &
+         MAX-ACC-DP=.0250000000 MAX-PCT-DCB=100.0000000  &
+         MAX-PCT-ENT=10.00000000 MIN-WEIR-LD=4.470981863  &
+         MAX-WEIR-LD=117.3721131 MIN-PCT-DCA=.1000000000
+     TRAY-SIZE 1 2 19 SIEVE
+
+ PDF updated                                                                      TIME =    234.09
+ THIS COPY OF ASPEN PLUS LICENSED TO NATIONAL TAIWAN UNIV            
+ 
+ 
+
+
+Calculations begin                                                              time    234.10
+
+
+      UOS BLOCK DIST     MODEL: RADFRAC                                           TIME =    234.10
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    3     0.30302    
+
+      CHECKING PHASE EQUILIBRIUM RESULTS                                          TIME =    234.10
+
+      CHECKING PHASE EQUILIBRIUM RESULTS                                          TIME =    234.10
+
+ Report Writer entered                                                            Time =    234.10
+
+ Results generated                                                                Time =    234.12
+
+RUN SAVED
+
+
+
+ *** SUMMARY OF ERRORS ***
+
+                  PHYSICAL
+                  PROPERTY  SYSTEM  SIMULATION
+ TERMINAL ERRORS      0        0         0
+   SEVERE ERRORS      0        0         0
+          ERRORS      0        0         0
+        WARNINGS      0        0         1
+
+
+ *** SUMMARY OF ERRORS ***
+
+                  PHYSICAL
+                  PROPERTY  SYSTEM  SIMULATION
+ TERMINAL ERRORS      0        0         0
+   SEVERE ERRORS      0        0         0
+          ERRORS      0        0         0
+        WARNINGS      0        0         1
+
+RUN SAVED
+
+
+
+ *** SUMMARY OF ERRORS ***
+
+                  PHYSICAL
+                  PROPERTY  SYSTEM  SIMULATION
+ TERMINAL ERRORS      0        0         0
+   SEVERE ERRORS      0        0         0
+          ERRORS      0        0         0
+        WARNINGS      0        0         1
+
+
+ *** SUMMARY OF ERRORS ***
+
+                  PHYSICAL
+                  PROPERTY  SYSTEM  SIMULATION
+ TERMINAL ERRORS      0        0         0
+   SEVERE ERRORS      0        0         0
+          ERRORS      0        0         0
+        WARNINGS      0        0         1
+
+RUN SAVED
+
+
+
+ *** SUMMARY OF ERRORS ***
+
+                  PHYSICAL
+                  PROPERTY  SYSTEM  SIMULATION
+ TERMINAL ERRORS      0        0         0
+   SEVERE ERRORS      0        0         0
+          ERRORS      0        0         0
+        WARNINGS      0        0         1

@@ -1,0 +1,10 @@
+INPUT: Example.inm
+MODNAME: apmain
+RUNID: Example
+NEW_RUNID: Example
+OLD_RUNID: Example
+PDF: Example.appdf
+USERNAME: PSE
+XMOD: C:\Program Files\AspenTech\Aspen Plus V14.0\Engine\xeq\apmain
+SPONLY:
+DBCONN: _1159hfl.ads
