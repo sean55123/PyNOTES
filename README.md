@@ -1,5 +1,5 @@
 # PyNOTES
-PyNOTES (NTU Optimization Technical Evaluation toolS) is an useful packages for various optimization technique tools(eg. simulator-based, equation-oriented).
+PyNOTES (NTU Optimization Technical Evaluation toolS) is an useful packages for various optimization technique tools(eg. simulator-based (Aspen Plus), equation-oriented).
 
 Specifically, Simulated annealing (SA), Particle Swarm Optimization (PSO), and Bayesian Optimization (BO) are for single objective optimization. Fuzzy, and NSGA2, on the other hand, are for multi-objective optimization. 
 
