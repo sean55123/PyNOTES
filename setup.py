@@ -19,5 +19,6 @@ setup(
     install_requires=["numpy", 
                       "pandas", 
                       "scipy", 
-                      "matplotlib"],  
+                      "matplotlib",
+                      "numpy_financial"],  
 )
