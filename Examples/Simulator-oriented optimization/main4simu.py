@@ -46,9 +46,11 @@ def get_status(aspen, Display=1):
     return status
 
 
+
+YourAspenFile = "Example.apw"
 def objective_function(x):
     global filepath
-    aspen, filepath = link2aspen('YourAspenFile.apw')
+    aspen, filepath = link2aspen(YourAspenFile)
     var_input(x, aspen)
     status = get_status()
     if status == 0:
@@ -59,7 +61,7 @@ def objective_function(x):
         aspen.close()
         aspen.quit()
         time.sleep(0.5)
-        aspen, filepath = link2aspen('YourAspenFile.apw')
+        aspen, filepath = link2aspen(YourAspenFile)
     return obj
 
 
@@ -92,5 +94,5 @@ end_time = time.perf_counter()
 cost_t = round(end_time - start_time, 1)
 
 folder_path = os.path.dirname(filepath)
-aspen = link2aspen('YourAspenFile.apw')[0]
+aspen = link2aspen(YourAspenFile)[0]
 Aspen_saving(cost_t, aspen, params, folder_path, 'Results', var_input)
