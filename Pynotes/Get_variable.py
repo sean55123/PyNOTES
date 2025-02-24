@@ -25,11 +25,11 @@ def getvar_reactor(bname, r_time, liq_hold, aspen):
             try:
                 iname = aspen.Application.Tree.FindNode(f"\\Data\\Flowsheet\\Section\\GLOBAL\\Input\\INSTRM\\{bname}\\#0").value
                 oname = aspen.Application.Tree.FindNode(f"\\Data\\Flowsheet\\Section\\GLOBAL\\Input\\OUTSTRM\\{bname}\\#0").value
-                FV = aspen.Application.Tree.FindNode(f'\\Data\\Streams\\{oname}\\Output\\VOLFLMX\\MIXED').value
-                Ti = aspen.Application.Tree.FindNode(f'\\Data\\Streams\\{iname}\\Output\\TEMP_OUT\\MIXED').value
-                To = aspen.Application.Tree.FindNode(f'\\Data\\Streams\\{oname}\\Output\\TEMP_OUT\\MIXED').value
-                Q = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\QCALC').value
-                P = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\B_PRES').value
+                FV = aspen.Application.Tree.FindNode(f'\\Data\\Streams\\{oname}\\Output\\VOLFLMX\\MIXED').ValueForUnit(12, 1)
+                Ti = aspen.Application.Tree.FindNode(f'\\Data\\Streams\\{iname}\\Output\\TEMP_OUT\\MIXED').ValueForUnit(22, 4)
+                To = aspen.Application.Tree.FindNode(f'\\Data\\Streams\\{oname}\\Output\\TEMP_OUT\\MIXED').ValueForUnit(22, 4)
+                Q = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\QCALC').ValueForUnit(13, 14)
+                P = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\B_PRES').ValueForUnit(20, 15)
                 V = FV * 3600 * r_time / liq_hold 
                 n = 1 
                 M = V
@@ -46,14 +46,14 @@ def getvar_reactor(bname, r_time, liq_hold, aspen):
             try:
                 iname = aspen.Application.Tree.FindNode(f"\\Data\\Flowsheet\\Section\\GLOBAL\\Input\\INSTRM\\{bname}\\#0").value
                 oname = aspen.Application.Tree.FindNode(f"\\Data\\Flowsheet\\Section\\GLOBAL\\Input\\OUTSTRM\\{bname}\\#0").value
-                L = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Input\\LENGTH').value
-                D = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Input\\DIAM').value
+                L = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Input\\LENGTH').ValueForUnit(17, 1)
+                D = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Input\\DIAM').ValueForUnit(17, 1)
                 NTUBE = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Input\\NTUBE').value
 
-                P = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\B_PRES\\MIXED\\1').value
-                Ti = aspen.Application.Tree.FindNode(f'\\Data\\Streams\\{iname}\\Output\\TEMP_OUT\\MIXED').value
-                To = aspen.Application.Tree.FindNode(f'\\Data\\Streams\\{oname}\\Output\\TEMP_OUT\\MIXED').value
-                Q = round(aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\QCALC').value, 0)  
+                P = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\B_PRES\\MIXED\\1').ValueForUnit(20, 15)
+                Ti = aspen.Application.Tree.FindNode(f'\\Data\\Streams\\{iname}\\Output\\TEMP_OUT\\MIXED').ValueForUnit(22, 4)
+                To = aspen.Application.Tree.FindNode(f'\\Data\\Streams\\{oname}\\Output\\TEMP_OUT\\MIXED').ValueForUnit(22, 4)
+                Q = round(aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\QCALC').ValueForUnit(13, 14), 0)  
 
                 chk_ntube = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Input\\CHK_NTUBE')
                 if chk_ntube and chk_ntube.value == "NO":
@@ -70,11 +70,11 @@ def getvar_reactor(bname, r_time, liq_hold, aspen):
             try:
                 iname = aspen.Application.Tree.FindNode(f"\\Data\\Flowsheet\\Section\\GLOBAL\\Input\\INSTRM\\{bname}\\#0").value
                 oname = aspen.Application.Tree.FindNode(f"\\Data\\Flowsheet\\Section\\GLOBAL\\Input\\OUTSTRM\\{bname}\\#0").value
-                V = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\TOT_VOL').value
-                Ti = aspen.Application.Tree.FindNode(f'\\Data\\Streams\\{iname}\\Output\\TEMP_OUT\\MIXED').value
-                To = aspen.Application.Tree.FindNode(f'\\Data\\Streams\\{oname}\\Output\\TEMP_OUT\\MIXED').value
-                Q = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\QCALC').value
-                P = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\B_PRES').value
+                V = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\TOT_VOL').ValueForUnit(27, 1)
+                Ti = aspen.Application.Tree.FindNode(f'\\Data\\Streams\\{iname}\\Output\\TEMP_OUT\\MIXED').ValueForUnit(22, 4)
+                To = aspen.Application.Tree.FindNode(f'\\Data\\Streams\\{oname}\\Output\\TEMP_OUT\\MIXED').ValueForUnit(22, 4)
+                Q = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\QCALC').ValueForUnit(13, 14)
+                P = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\B_PRES').ValueForUnit(20, 15)
                 n = 1 
                 M = V
                 while M > 35:
@@ -109,8 +109,8 @@ def getvar_column(D, name, aspen):
     """
     try:
         NT = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{name}\\Input\\NSTAGE').value
-        Tt = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{name}\\Output\\TOP_TEMP').value
-        Tb = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{name}\\Output\\BOTTOM_TEMP').value
+        Tt = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{name}\\Output\\TOP_TEMP').ValueForUnit(22, 4)
+        Tb = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{name}\\Output\\BOTTOM_TEMP').ValueForUnit(22, 4)
         Qc = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{name}\\Output\\COND_DUTY').ValueForUnit(13, 14)
         Qr = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{name}\\Output\\REB_DUTY').ValueForUnit(13, 14)
         P = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{name}\\Output\\B_PRES\\1').ValueForUnit(20, 15)
@@ -173,9 +173,9 @@ def getvar_decanter(bname, r_time, aspen):
         List: [Volume, Diameter, Pressure, Number of vessel]
     """
     try:
-        FV1 = aspen.Application.Tree.FindNode(f"\\Data\\Flowsheet\\Section\\GLOBAL\\Input\\OUTSTRM\\{bname}\\#0").value
-        FV2 = aspen.Application.Tree.FindNode(f"\\Data\\Flowsheet\\Section\\GLOBAL\\Input\\OUTSTRM\\{bname}\\#1").value
-        P = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\B_PRES').value
+        FV1 = aspen.Application.Tree.FindNode(f"\\Data\\Flowsheet\\Section\\GLOBAL\\Input\\OUTSTRM\\{bname}\\#0").ValueForUnit(12, 1)
+        FV2 = aspen.Application.Tree.FindNode(f"\\Data\\Flowsheet\\Section\\GLOBAL\\Input\\OUTSTRM\\{bname}\\#1").ValueForUnit(12, 1)
+        P = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\B_PRES').ValueForUnit(20, 15)
         V = (FV1 + FV2) * 60 * r_time
         n = 1 
         M = V
@@ -205,8 +205,8 @@ def getvar_exchanger(bname, aspen):
     try:
         iname = aspen.Application.Tree.FindNode(f"\\Data\\Flowsheet\\Section\\GLOBAL\\Input\\INSTRM\\{bname}\\#0").value
         oname = aspen.Application.Tree.FindNode(f"\\Data\\Flowsheet\\Section\\GLOBAL\\Input\\OUTSTRM\\{bname}\\#0").value
-        Ti = aspen.Application.Tree.FindNode(f'\\Data\\Streams\\{iname}\\Output\\TEMP_OUT\\MIXED').value
-        To = aspen.Application.Tree.FindNode(f'\\Data\\Streams\\{oname}\\Output\\TEMP_OUT\\MIXED').value
+        Ti = aspen.Application.Tree.FindNode(f'\\Data\\Streams\\{iname}\\Output\\TEMP_OUT\\MIXED').ValueForUnit(22, 4)
+        To = aspen.Application.Tree.FindNode(f'\\Data\\Streams\\{oname}\\Output\\TEMP_OUT\\MIXED').ValueForUnit(22, 4)
         Q = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\QCALC').ValueForUnit(13, 14)
         P = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\B_PRES').ValueForUnit(20, 15)
         return [Ti, To, Q, P]
@@ -228,11 +228,11 @@ def getvar_heatx(bname, aspen):
         List: [Heat exchanger area, Pressure, Minimum temperature difference] 
     """
     try:
-        A = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\HX_AREAP').value
+        A = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\HX_AREAP').ValueForUnit(1, 1)
         P1 = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\HOTINP').ValueForUnit(20, 15)
-        P2 = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\COLDINP').value
-        P3 = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\HOT_PRES').value
-        P4 = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\COLD_PRES').value
+        P2 = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\COLDINP').ValueForUnit(20, 15)
+        P3 = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\HOT_PRES').ValueForUnit(20, 15)
+        P4 = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\COLD_PRES').ValueForUnit(20, 15)
         P = max([P1, P2, P3, P4])
 
         N = aspen.Application.Tree.FindNode(f"\\Data\\Blocks\\{bname}\\Input\\NPOINT").Value
@@ -246,10 +246,10 @@ def getvar_heatx(bname, aspen):
 
         for i in range(N+2):
             try:
-                TH_inP[i]  = aspen.Application.Tree.FindNode(f"\\Data\\Blocks\\{bname}\\Output\\TEMP_HOT\\INLET\\{i+1}").value
-                TC_inP[i]  = aspen.Application.Tree.FindNode(f"\\Data\\Blocks\\{bname}\\Output\\TEMP_CLD\\INLET\\{i+1}").value
-                TH_outP[i] = aspen.Application.Tree.FindNode(f"\\Data\\Blocks\\{bname}\\Output\\TEMP_HOT\\OUTLET\\{i+1}").value
-                TC_outP[i] = aspen.Application.Tree.FindNode(f"\\Data\\Blocks\\{bname}\\Output\\TEMP_CLD\\OUTLET\\{i+1}").value
+                TH_inP[i]  = aspen.Application.Tree.FindNode(f"\\Data\\Blocks\\{bname}\\Output\\TEMP_HOT\\INLET\\{i+1}").ValueForUnit(22, 4)
+                TC_inP[i]  = aspen.Application.Tree.FindNode(f"\\Data\\Blocks\\{bname}\\Output\\TEMP_CLD\\INLET\\{i+1}").ValueForUnit(22, 4)
+                TH_outP[i] = aspen.Application.Tree.FindNode(f"\\Data\\Blocks\\{bname}\\Output\\TEMP_HOT\\OUTLET\\{i+1}").ValueForUnit(22, 4)
+                TC_outP[i] = aspen.Application.Tree.FindNode(f"\\Data\\Blocks\\{bname}\\Output\\TEMP_CLD\\OUTLET\\{i+1}").ValueForUnit(22, 4)
                 Td_inP[i]  = TH_inP[i] - TC_inP[i]
                 Td_outP[i] = TH_outP[i] - TC_outP[i]
                 Td_e[i]    = round(Td_inP[i] * (1 - i / (N + 1)) + Td_outP[i] * (i / (N + 1)), 2)
@@ -280,9 +280,9 @@ def getvar_extractor(bname, oname1, oname2, time, aspen):
         List: [Volume, Diameter, Pressure, Number of vessel] 
     """
     try:
-        FV1 = aspen.Application.Tree.FindNode(f"\\Data\\Flowsheet\\Section\\GLOBAL\\Input\\OUTSTRM\\{bname}\\#0").value
-        FV2 = aspen.Application.Tree.FindNode(f"\\Data\\Flowsheet\\Section\\GLOBAL\\Input\\OUTSTRM\\{bname}\\#1").value
-        P = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\B_PRES').value
+        FV1 = aspen.Application.Tree.FindNode(f"\\Data\\Flowsheet\\Section\\GLOBAL\\Input\\OUTSTRM\\{bname}\\#0").ValueForUnit(12, 1)
+        FV2 = aspen.Application.Tree.FindNode(f"\\Data\\Flowsheet\\Section\\GLOBAL\\Input\\OUTSTRM\\{bname}\\#1").ValueForUnit(12, 1)
+        P = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\B_PRES').ValueForUnit(20, 15)
         NT = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Input\\NSTAGE').value
         FV_T = (FV1 + FV2) * 60 / (0.3048 ** 3)
 
@@ -315,7 +315,7 @@ def getvar_compressor(bname, aspen):
         Float: Works (kW) 
     """
     try:
-        W = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\WNET').value
+        W = aspen.Application.Tree.FindNode(f'\\Data\\Blocks\\{bname}\\Output\\WNET').ValueForUnit(13, 14)
         return W
     except AttributeError as e:
         logging.error(f"Error processing compressor block '{bname}': {e}")
